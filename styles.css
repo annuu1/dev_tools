@@ -39,11 +39,11 @@ li {
 
 a {
     text-decoration: none;
-    color: #35424a;
+    color: #3e89b8;
 }
 
 a:hover {
-    text-decoration: underline;
+    background-color: red;
 }
 
 footer {
