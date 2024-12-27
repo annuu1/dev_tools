@@ -59,8 +59,8 @@
 
             // Send the data to the server
             fetch('https://script.google.com/macros/s/AKfycbz3ScZ7sf2T4mt-Of5rIOENq0tcoZsJf0k0-W5KhmDAXL_ZjMQDutM1Iqzb77o-L8VDGw/exec?action=addFollowUP', {
-                method: 'GET',
-                headers: {
+                method: 'POST',
+                headers: { 
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
