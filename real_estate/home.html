@@ -3,71 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacted Clients</title>
-    <link rel="stylesheet" href="./css/styles.css"> <!-- Link to external CSS file -->
+    <title>Tools and Utilities Hub</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #35424a;
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.8em; /* Responsive font size */
+}
+
+p {
+    font-size: 1.2em; /* Responsive font size */
+    margin: 10px 0;
+}
+
+.navigation {
+    margin: 20px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.navigation ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.navigation li {
+    margin: 15px 0; /* Space between links */
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #35424a;
+    font-size: 1.5em; /* Responsive font size */
+    padding: 10px 15px;
+    display: inline-block; /* Make the link a block for padding */
+    border: 2px solid #35424a; /* Border for button effect */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+}
+
+.navigation a:hover {
+    background-color: #35424a; /* Change background on hover */
+    color: #ffffff; /* Change text color on hover */
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background: #35424a;
+    color: #ffffff;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5em; /* Smaller font size for mobile */
+    }
+
+    p {
+        font-size: 1em; /* Smaller font size for mobile */
+    }
+
+    .navigation a {
+        font-size: 1.2em; /* Smaller font size for mobile */
+    }
+}
+    </style>
 </head>
 <body>
     <header>
-        <h1>Contacted Clients and Follow-ups</h1>
+        <h1>Welcome to the Tools and Utilities Hub</h1>
+        <p>Select a feature to access:</p>
     </header>
     
     <main>
-        <section class="table-container">
-            <table id="clientsTable">
-                <thead>
-                    <tr>
-                        <th>Last Contact</th>
-                        <th>Name</th>
-                        <th>Mobile Number</th>
-                        <th>Interested In</th>
-                        <th>Note</th>
-                        <th>Broker</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here -->
-                </tbody>
-            </table>
+        <section class="navigation">
+            <ul>
+                <li><a href="contactedClients.html">All Contacted Clients</a></li>
+                <li><a href="recent.html">Recent Contacted Clients</a></li>
+                <li><a href="recommended.html">Recommended Follow-ups</a></li>
+                <li><a href="other-feature.html">Other Feature</a></li>
+                <li><a href="addFollowUp.html">Add Follow Up</a></li>
+                <!-- Add more features as needed -->
+            </ul>
         </section>
     </main>
 
     <footer>
         <p>&copy; 2023 Your Name. All rights reserved.</p>
     </footer>
-
-    <script>
-        // Fetch data from the provided URL
-        fetch('https://script.google.com/macros/s/AKfycbwV58lkoD4DlsSRcC2CqZ9zu6p461VU1fRej0hIS7WrL-kZYYmOj5FGyjzgJArcwCwOXw/exec?action=getFollowUps')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.querySelector('#clientsTable tbody');
-                tableBody.innerHTML = ''; // Clear any existing content
-
-                // Populate the table with data
-                data.forEach(client => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${new Date(client.lastContact).toLocaleString()}</td>
-                        <td>${client.name}</td>
-                        <td>${client.phone}</td>
-                        <td>${client.interest}</td>
-                        <td>${client.note}</td>
-                        <td>${client.broker}</td>
-                        <td>${client.date}</td>
-                        <td>Open</td>   
-                        <td>Edit</td>   
-                    `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                const tableBody = document.querySelector('#clientsTable tbody');
-                tableBody.innerHTML = '<tr><td colspan="7">Failed to load data.</td></tr>';
-            });
-    </script>
 </body>
 </html>

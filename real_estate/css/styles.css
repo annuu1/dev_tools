@@ -67,4 +67,8 @@ footer {
         font-size: 0.8em; /* Smaller font size for mobile */
         padding: 8px; /* Smaller padding for mobile */
     }
+    .table-container{
+        margin: 0.4em;
+        padding: 0em;
+    }
 }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add or Update Client</title>
+    <link rel="stylesheet" href="./css/formStyles.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+    <header>
+        <h1>Add or Update Client Details</h1>
+        <a href="index.html" class="back-link">Back to Home</a>
+    </header>
+    
+    <main>
+        <section class="form-container">
+            <form id="clientForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="phone">Mobile Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+
+                <label for="interest">Interested In:</label>
+                <input type="text" id="interest" name="interest" required>
+
+                <label for="note">Note:</label>
+                <textarea id="note" name="note" required></textarea>
+
+                <label for="broker">Broker:</label>
+                <input type="text" id="broker" name="broker" required>
+
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Your Name. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('clientForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Gather form data
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                interest: document.getElementById('interest').value,
+                note: document.getElementById('note').value,
+                broker: document.getElementById('broker').value,
+                date: document.getElementById('date').value,
+                lastContact: new Date().toISOString() // Set last contact to now
+            };
+
+            // Send the data to the server
+            fetch('https://script.google.com/macros/s/AKfycbz3ScZ7sf2T4mt-Of5rIOENq0tcoZsJf0k0-W5KhmDAXL_ZjMQDutM1Iqzb77o-L8VDGw/exec?action=addFollowUP', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Client details submitted successfully!');
+                    this.reset(); // Reset the form after submission
+                } else {
+                    alert('Failed to submit client details.');
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting data:', error);
+                alert('An error occurred while submitting the form.');
+            });
+        });
+    </script>
+</body>
+</html>
