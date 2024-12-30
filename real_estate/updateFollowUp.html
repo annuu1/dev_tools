@@ -34,6 +34,9 @@
           <label for="date">Date:</label>
           <input type="date" id="date" name="date" />
 
+          <label for="status">Status</label>
+          <input type="text" id="status" name="status" />
+
           <button type="submit">Submit</button>
         </form>
       </section>
@@ -62,6 +65,7 @@
             note: document.getElementById("note").value,
             broker: document.getElementById("broker").value,
             date: formatDateFromInput(document.getElementById("date").value),
+            status: document.getElementById("status").value,
             lastContact: formatDateTime(new Date()), // Set last contact to now
           };
 
@@ -73,7 +77,7 @@
           // }
           // console.log(newURL);
           fetch(
-            `${scriptURL}?action=addFollowUp&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}`
+            `${scriptURL}?action=updateFollowUp&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
           )
             .then((response) => response.json())
             .then((data) => {

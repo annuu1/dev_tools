@@ -1,56 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contacted Clients</title>
-    <link rel="stylesheet" href="./css/styles.css"> <!-- Link to external CSS file -->
-</head>
-<body>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <!-- Link to external CSS file -->
+  </head>
+  <body>
     <header>
-        <h1>Contacted Clients and Follow-ups</h1>
+      <h1>Contacted Clients and Follow-ups</h1>
     </header>
-    
+
     <main>
-        <section class="table-container">
-            <table id="clientsTable">
-                <thead>
-                    <tr>
-                        <th>Last Contact</th>
-                        <th>Name</th>
-                        <th>Mobile Number</th>
-                        <th>Interested In</th>
-                        <th>Note</th>
-                        <th>Broker</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data will be populated here -->
-                </tbody>
-            </table>
-        </section>
+      <section class="table-container">
+        <table id="clientsTable">
+          <thead>
+            <tr>
+              <th>Last Contact</th>
+              <th>Name</th>
+              <th>Mobile Number</th>
+              <th>Interested In</th>
+              <th>Note</th>
+              <th>Broker</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data will be populated here -->
+          </tbody>
+        </table>
+      </section>
     </main>
 
     <footer>
-        <p>&copy; 2023 Your Name. All rights reserved.</p>
+      <p>&copy; 2023 Your Name. All rights reserved.</p>
     </footer>
 
+    <script src="./scripts/script.js"></script>
     <script>
-        // Fetch data from the provided URL
-        fetch('https://script.google.com/macros/s/AKfycbz3ScZ7sf2T4mt-Of5rIOENq0tcoZsJf0k0-W5KhmDAXL_ZjMQDutM1Iqzb77o-L8VDGw/exec?action=getFollowUps')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.querySelector('#clientsTable tbody');
-                tableBody.innerHTML = ''; // Clear any existing content
+      // Fetch data from the provided URL
+      fetch(`${scriptURL}?action=getFollowUps`)
+        .then((response) => response.json())
+        .then((data) => {
+          const tableBody = document.querySelector("#clientsTable tbody");
+          tableBody.innerHTML = ""; // Clear any existing content
 
-                // Populate the table with data
-                data.forEach(client => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${new Date(client.lastContact).toLocaleString()}</td>
+          // Populate the table with data
+          data.forEach((client) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                        <td>${new Date(
+                          client.lastContact
+                        ).toLocaleString()}</td>
                         <td>${client.name}</td>
                         <td>${client.phone}</td>
                         <td>${client.interest}</td>
@@ -60,14 +64,15 @@
                         <td>Open</td>   
                         <td>Edit</td>   
                     `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                const tableBody = document.querySelector('#clientsTable tbody');
-                tableBody.innerHTML = '<tr><td colspan="7">Failed to load data.</td></tr>';
-            });
+            tableBody.appendChild(row);
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          const tableBody = document.querySelector("#clientsTable tbody");
+          tableBody.innerHTML =
+            '<tr><td colspan="7">Failed to load data.</td></tr>';
+        });
     </script>
-</body>
+  </body>
 </html>
