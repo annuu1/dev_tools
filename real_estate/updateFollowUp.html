@@ -81,6 +81,7 @@
           )
             .then((response) => response.json())
             .then((data) => {
+              console.log(data);
               if (data.success) {
                 alert("Client details submitted successfully!");
                 this.reset(); // Reset the form after submission
