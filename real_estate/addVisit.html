@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add or Update Client</title>
+    <link rel="stylesheet" href="./css/formStyles.css" />
+    <!-- Link to external CSS file -->
+  </head>
+  <body>
+    <header>
+      <h1>Add or Update Client Details</h1>
+      <a href="home.html" class="back-link btn">Back to Home</a>
+    </header>
+
+    <main>
+      <section class="form-container">
+        <form id="clientForm">
+
+          <label for="host">Your Name:</label>
+          <select name="host" id="host">
+            <option value="Flat">Bindu</option>
+            <option value="Villa">Pooja</option>
+            <option value="Plot">Hetram</option>
+          </select>
+
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required />
+
+          <label for="phone">Mobile Number:</label>
+          <input type="tel" id="phone" name="phone" required />
+
+          <label for="interest">Interested In:</label>
+          <select name="interest" id="interest">
+            <option value="Flat">Flat</option>
+            <option value="Villa">Villa</option>
+            <option value="Plot">Plot</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Resale">Resale</option>
+          </select>
+
+          <label for="note">Note:</label>
+          <textarea id="note" name="note"></textarea>
+
+          <label for="broker">Broker:</label>
+          <input type="text" id="broker" name="broker" />
+
+          <label for="date">Date:</label>
+          <input type="date" id="date" name="date" />
+
+          <label for="editStatus">Status:</label>
+          <select id="status" name="status" required>
+            <option value="Open">Open</option>
+            <option value="Visited">Visited</option>
+            <option value="Pending">Pending on Client</option>
+            <option value="Follow-up">Follow-up</option>
+            <option value="Closed">Closed</option>
+          </select><br />
+
+          <button type="submit">Submit</button>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2023 Your Name. All rights reserved.</p>
+    </footer>
+
+    <script src="./scripts/script.js"></script>
+
+    <script>
+      document
+        .getElementById("clientForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          // Gather form data
+          const formData = {
+            host: document.getElementById('host').value,
+            name: document.getElementById("name").value,
+            phone: document.getElementById("phone").value,
+            interest: document.getElementById("interest").value,
+            note: document.getElementById("note").value,
+            broker: document.getElementById("broker").value,
+            date: formatDateFromInput(document.getElementById("date").value),
+            lastContact: formatDateTime(new Date()),
+            status: document.getElementById("status").value,
+          };
+
+          fetch(
+            `${scriptURL}?action=addVisit&host=${formData.host}&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                alert("Client details submitted successfully!");
+                this.reset(); // Reset the form after submission
+              } else {
+                alert("Failed to submit client details.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error submitting data:", error);
+              alert("An error occurred while submitting the form.");
+            });
+        });
+
+      function formatDateTime(date) {
+        // Extract parts of the date
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1
+        const day = String(date.getDate()).padStart(2, "0");
+        const year = date.getFullYear();
+
+        // Extract parts of the time
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const seconds = String(date.getSeconds()).padStart(2, "0");
+
+        // Return the formatted string
+        return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+      }
+
+      function formatDateFromInput(inputDate) {
+        // Parse the input date (which will be in YYYY-MM-DD format)
+        const date = new Date(inputDate); // Convert the string to a Date object
+
+        const month = date.getMonth() + 1; // Month is 0-based, so add 1
+        const day = date.getDate();
+        const year = date.getFullYear();
+
+        // Return formatted date as M/D/YYYY
+        return `${month}/${day}/${year}`;
+      }
+    </script>
+  </body>
+</html>

@@ -114,6 +114,7 @@
               <th>Note</th>
               <th>Broker</th>
               <th>Date</th>
+              <th>Host</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -178,7 +179,7 @@
     <script src="./scripts/script.js"></script>
     <script>
       // Fetch data from the provided URL
-      fetch(`${scriptURL}?action=getFollowUps`)
+      fetch(`${scriptURL}?action=getVisits`)
         .then((response) => response.json())
         .then((data) => {
           const tableBody = document.querySelector("#clientsTable tbody");
@@ -186,8 +187,7 @@
 
           // Populate the table with data
           data.forEach((client, index) => {
-            if(formatDateFromInput(client.date)===formatDateFromInput(new Date())){
-                const row = document.createElement("tr");
+            const row = document.createElement("tr");
             row.innerHTML = `
                         <td>${new Date(client.lastContact).toLocaleString()}</td>
                         <td>${client.name}</td>
@@ -196,12 +196,11 @@
                         <td>${client.note}</td>
                         <td>${client.broker}</td>
                         <td>${client.date ? formatDateFromInput(client.date) : ''}</td>
+                        <td>${client.host}</td>
                         <td>${client.status}</td>
                         <td><button class="editBtn" data-index="${index}">Edit</button></td>
                     `;
             tableBody.appendChild(row);
-            }
-            
           });
 
           // Add event listeners for the "Edit" buttons
@@ -249,7 +248,7 @@
 
           
           fetch(
-            `${scriptURL}?action=updateFollowUp&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
+            `${scriptURL}?action=updateVisits&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
           )
             .then((response) => response.json())
             .then((data) => {
