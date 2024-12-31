@@ -6,6 +6,9 @@
     <title>Contacted Clients</title>
     <link rel="stylesheet" href="./css/styles.css" />
     <style>
+      *{
+        box-sizing: border-box;
+      }
       /* Modal Styling */
       #editFormModal {
         display: none; /* Hidden by default */
@@ -69,14 +72,37 @@
       form input[type="submit"]:hover {
         background-color: #45a049;
       }
+
+      @media (max-width: 600px) {
+  #editFormModalContent {
+    width: 95%; /* Full width on small screens */
+    margin: 5% auto; /* Adjust margin */
+  }
+
+  table {
+    font-size: 14px; /* Smaller font size for mobile */
+  }
+
+  th, td {
+    padding: 6px; /* Less padding for mobile */
+  }
+
+  form input[type="submit"] {
+    padding: 8px; /* Smaller button padding */
+  }
+}
     </style>
   </head>
   <body>
     <header>
       <h1>Contacted Clients and Follow-ups</h1>
+      <div class="btns">
+        <a href="./home.html" class="btn">Home</a>
+        <a href="./addFollowUp.html" class="btn">Add</a>
+      </div>
     </header>
-
     <main>
+      
       <section class="table-container">
         <table id="clientsTable">
           <thead>
@@ -112,23 +138,31 @@
           <input type="text" id="editPhone" name="phone" required /><br />
 
           <label for="editInterest">Interested In:</label>
-          <input type="text" id="editInterest" name="interest" required /><br />
+          <!-- <input type="text" id="editInterest" name="interest"  /><br /> -->
+          <select name="interest" id="editInterest">
+            <option value="Flat">Flat</option>
+            <option value="Villa">Villa</option>
+            <option value="Plot">Plot</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Resale">Resale</option>
+          </select>
 
           <label for="editNote">Note:</label>
-          <textarea id="editNote" name="note" required></textarea><br />
+          <textarea id="editNote" name="note" ></textarea><br />
 
           <label for="editBroker">Broker:</label>
-          <input type="text" id="editBroker" name="broker" required /><br />
+          <input type="text" id="editBroker" name="broker"  /><br />
 
           <label for="editDate">Date:</label>
-          <input type="date" id="editDate" name="date" required /><br />
+          <input type="date" id="editDate" name="date"  /><br />
 
           <label for="editStatus">Status:</label>
           <select id="editStatus" name="status" required>
             <option value="Open">Open</option>
-            <option value="Closed">Closed</option>
-            <option value="Pending">Pending</option>
+            <option value="Visited">Visited</option>
+            <option value="Pending">Pending on Client</option>
             <option value="Follow-up">Follow-up</option>
+            <option value="Closed">Closed</option>
           </select><br />
 
           <input type="submit" value="Submit" />
@@ -160,7 +194,7 @@
                         <td>${client.interest}</td>
                         <td>${client.note}</td>
                         <td>${client.broker}</td>
-                        <td>${client.date}</td>
+                        <td>${client.date ? formatDateFromInput(client.date) : ''}</td>
                         <td>${client.status}</td>
                         <td><button class="editBtn" data-index="${index}">Edit</button></td>
                     `;
@@ -185,19 +219,22 @@
 
       // Function to open the edit form in the modal
       function openEditForm(client, index) {
+        console.log(formatDateFromInput(client.date));
+        
         document.getElementById("editFormModal").style.display = "block";
         document.getElementById("editName").value = client.name;
         document.getElementById("editPhone").value = client.phone;
         document.getElementById("editInterest").value = client.interest;
         document.getElementById("editNote").value = client.note;
         document.getElementById("editBroker").value = client.broker;
-        document.getElementById("editDate").value = client.date;
+        document.getElementById("editDate").value = formatDateToInput1(client.date);
         document.getElementById("editStatus").value = client.status;
 
         // Handle form submission
         document.getElementById("editForm").onsubmit = function (e) {
           e.preventDefault();
-          const updatedClient = {
+          const formData = {
+            lastContact: formatDateTime(new Date()),
             name: document.getElementById("editName").value,
             phone: document.getElementById("editPhone").value,
             interest: document.getElementById("editInterest").value,
@@ -207,8 +244,24 @@
             status: document.getElementById("editStatus").value,
           };
 
-          // Here you would normally send the updated data to the server
-          console.log("Updated Client:", updatedClient);
+          
+          fetch(
+            `${scriptURL}?action=updateFollowUp&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
+              if (data.success) {
+                alert("Client details submitted successfully!");
+                this.reset(); // Reset the form after submission
+              } else {
+                alert("Failed to submit client details.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error submitting data:", error);
+              alert("An error occurred while submitting the form.");
+            });
 
           // Close the modal and update the table
           document.getElementById("editFormModal").style.display = "none";
@@ -231,6 +284,47 @@
       document.getElementById("closeModal").addEventListener("click", () => {
         document.getElementById("editFormModal").style.display = "none";
       });
+
+
+
+      function formatDateTime(date) {
+        // Extract parts of the date
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1
+        const day = String(date.getDate()).padStart(2, "0");
+        const year = date.getFullYear();
+
+        // Extract parts of the time
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const seconds = String(date.getSeconds()).padStart(2, "0");
+
+        // Return the formatted string
+        return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+      }
+
+      function formatDateFromInput(inputDate) {
+        // Parse the input date (which will be in YYYY-MM-DD format)
+        const date = new Date(inputDate); // Convert the string to a Date object
+
+        const month = date.getMonth() + 1; // Month is 0-based, so add 1
+        const day = date.getDate();
+        const year = date.getFullYear();
+
+        // Return formatted date as M/D/YYYY
+        return `${month}/${day}/${year}`;
+      }
+      function formatDateToInput1(inputDate) {
+            // Parse the input date (which will be in YYYY-MM-DD format)
+            const date = new Date(inputDate); // Convert the string to a Date object
+
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1
+            const day = String(date.getDate()).padStart(2, "0");
+
+            // Return formatted date as YYYY-MM-DD
+            return `${year}-${month}-${day}`;
+        }
+
     </script>
   </body>
 </html>
