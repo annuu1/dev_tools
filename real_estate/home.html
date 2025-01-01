@@ -3,114 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tools and Utilities Hub</title>
-    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <title>Dashboard</title>
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+        }
 
-header {
-    background: #35424a;
-    color: #ffffff;
-    padding: 20px 0;
-    text-align: center;
-}
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #2f2f2f;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            transition: transform 0.3s ease-in-out;
+            z-index: 10;
+        }
 
-h1 {
-    margin: 0;
-    font-size: 1.8em; /* Responsive font size */
-}
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-p {
-    font-size: 1.2em; /* Responsive font size */
-    margin: 10px 0;
-}
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            margin: 5px 0;
+        }
 
-.navigation {
-    margin: 20px;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .sidebar a i {
+            margin-right: 10px;
+        }
 
-.navigation ul {
-    list-style-type: none;
-    padding: 0;
-}
+        .sidebar a:hover {
+            background-color: #575757;
+        }
 
-.navigation li {
-    margin: 15px 0; /* Space between links */
-}
+        .sidebar.closed {
+            transform: translateX(-250px);
+        }
 
-.navigation a {
-    text-decoration: none;
-    color: #35424a;
-    font-size: 1.5em; /* Responsive font size */
-    padding: 10px 15px;
-    display: inline-block; /* Make the link a block for padding */
-    border: 2px solid #35424a; /* Border for button effect */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
-}
+        .sidebar .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
 
-.navigation a:hover {
-    background-color: #35424a; /* Change background on hover */
-    color: #ffffff; /* Change text color on hover */
-}
+        .sidebar .menu-item .menu-text {
+            margin-left: 10px;
+            display: inline-block;
+        }
 
-footer {
-    text-align: center;
-    padding: 10px 0;
-    background: #35424a;
-    color: #ffffff;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-}
+        /* Content */
+        .content {
+            margin-left: 290px;
+            padding: 20px;
+            transition: margin-left 0.3s ease-in-out;
+            transition: padding-left 0.3s ease;
+            background-color: #fdb058;
+        }
 
-/* Responsive Styles */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 1.5em; /* Smaller font size for mobile */
-    }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-    p {
-        font-size: 1em; /* Smaller font size for mobile */
-    }
+        .header h1 {
+            margin: 0;
+        }
 
-    .navigation a {
-        font-size: 1.2em; /* Smaller font size for mobile */
-    }
-}
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 20px;
+            width: 25px;
+        }
+
+        .hamburger div {
+            height: 4px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        /* Cards */
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            margin: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            flex-basis: 30%;
+            text-align: center;
+        }
+
+        /* Chart */
+        .chart {
+            height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2f2f2f;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            /* Sidebar */
+            .sidebar {
+                width: 60px; /* Show only icons on mobile */
+                transition: width 0.3s ease;
+            }
+
+            .content {
+                margin-left: 100px; /* Adjust content to fit the smaller sidebar */
+                padding: 0.5em;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            /* Hide text on mobile */
+            .sidebar a .menu-text {
+                display: none;
+            }
+
+            /* Show text when the sidebar is expanded */
+            .sidebar.closed .menu-text {
+                display: inline-block;
+            }
+
+            /* Cards */
+            .cards {
+                flex-direction: column;
+            }
+
+            .card {
+                flex-basis: 100%;
+                margin: 0px;
+            }
+            .chart{
+                height: 300px;
+                margin: 10px 0px;
+            }
+        }
+
     </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to the Tools and Utilities Hub</h1>
-        <p>Select a feature to access:</p>
-    </header>
-    
-    <main>
-        <section class="navigation">
-            <ul>
-                <li><a href="contactedClients.html">All Contacted Clients</a></li>
-                <li><a href="recent.html">Recent Contacted Clients</a></li>
-                <li><a href="recommended.html">Recommended Follow-ups</a></li>
-                <li><a href="other-feature.html">Other Feature</a></li>
-                <li><a href="addFollowUp.html">Add Follow Up</a></li>
-                <li><a href="updateFollowUp.html">Update Follow Up</a></li>
-                <!-- Add more features as needed -->
-            </ul>
-        </section>
-    </main>
+    <div class="sidebar" id="sidebar">
+        <h2>Admin</h2>
+        <a href="contactedClients.html">
+            <i class="fas fa-users"></i>
+            <span class="menu-text">All Clients</span>
+        </a>
+        <a href="recent.html">
+            <i class="fas fa-clock"></i>
+            <span class="menu-text">Recent Clients</span>
+        </a>
+        <a href="recommended.html">
+            <i class="fas fa-star"></i>
+            <span class="menu-text">Recommended Follow-ups</span>
+        </a>
+        <a href="other-feature.html">
+            <i class="fas fa-cogs"></i>
+            <span class="menu-text">Other Feature</span>
+        </a>
+        <a href="addFollowUp.html">
+            <i class="fas fa-plus-circle"></i>
+            <span class="menu-text">Add Follow Up</span>
+        </a>
+        <a href="updateFollowUp.html">
+            <i class="fas fa-edit"></i>
+            <span class="menu-text">Update Follow Up</span>
+        </a>
+    </div>
 
-    <footer>
-        <p>&copy; 2023 Your Name. All rights reserved.</p>
-    </footer>
+    <div class="content">
+        <div class="header">
+            <h1>Dashboard Overview</h1>
+            <div class="hamburger" id="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <h3>15</h3>
+                <p>Open</p>
+            </div>
+            
+            <div class="card" id="recommended">
+                <h3>20</h3>
+                <p>Recommended</p>
+            </div>
+            <div class="card">
+                <h3>30</h3>
+                <p>Closed</p>
+            </div>
+            <div class="card">
+                <h3>70</h3>
+                <p>Visited</p>
+            </div>
+            <div class="card" id="contactedClients">
+                <h3>320</h3>
+                <p>Total Contacted</p>
+            </div>
+        </div>
+
+        <div class="chart" id="chartContainer">
+            <h2>Monthly Traffic</h2>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 My Dashboard</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./scripts/script.js"></script>
+    <script>
+        
+
+// Call getFollowUps when ready (e.g., on page load)
+getFollowUps();
+        // Chart.js setup
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Monthly Traffic',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Hamburger menu toggle
+        const sidebar = document.getElementById('sidebar');
+        const hamburger = document.getElementById('hamburger');
+
+        hamburger.addEventListener('click', () => {
+            sidebar.classList.toggle('closed');
+            const content = document.querySelector('.content');
+            content.style.marginLeft = sidebar.classList.contains('closed') ? '60px' : '250px';
+        });
+    </script>
 </body>
 </html>

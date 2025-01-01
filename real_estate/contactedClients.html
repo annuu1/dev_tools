@@ -302,17 +302,7 @@
         return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
       }
 
-      function formatDateFromInput(inputDate) {
-        // Parse the input date (which will be in YYYY-MM-DD format)
-        const date = new Date(inputDate); // Convert the string to a Date object
-
-        const month = date.getMonth() + 1; // Month is 0-based, so add 1
-        const day = date.getDate();
-        const year = date.getFullYear();
-
-        // Return formatted date as M/D/YYYY
-        return `${month}/${day}/${year}`;
-      }
+      
       function formatDateToInput1(inputDate) {
             // Parse the input date (which will be in YYYY-MM-DD format)
             const date = new Date(inputDate); // Convert the string to a Date object
