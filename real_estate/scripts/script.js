@@ -53,8 +53,4 @@ function updateDashboard() {
     }
 }
 
-// Call getFollowUps once when the page loads
-window.onload = async function() {
-    await getFollowUps();  // Wait for the fetch to complete
-    updateDashboard();     // Update the dashboard after the data is fetched
-};
+

@@ -4,21 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contacted Clients</title>
+    <!-- Font Awesome CDN for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="./css/styles.css" />
     <style>
-      *{
+      * {
         box-sizing: border-box;
       }
       /* Modal Styling */
       #editFormModal {
-        display: none; /* Hidden by default */
+        display: none;
         position: fixed;
-        z-index: 1; /* Sit on top */
+        z-index: 1;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+        background-color: rgba(0, 0, 0, 0.4);
       }
 
       #editFormModalContent {
@@ -45,7 +47,6 @@
         background-color: #d32f2f;
       }
 
-      /* Styling the form fields */
       form label {
         display: block;
         margin: 10px 0 5px;
@@ -73,24 +74,52 @@
         background-color: #45a049;
       }
 
+      /* WhatsApp Button Styling */
+      .btn {
+        min-width: 100px;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+      }
+      .editBtn{
+        background-color: #60d4e9;
+      }
+      .whatsappBtn{
+        background-color: #25d366 ;
+      }
+
+      .whatsappBtn i {
+        margin-right: 8px;
+      }
+
+      .whatsappBtn:hover {
+        background-color: #128c7e;
+      }
+
       @media (max-width: 600px) {
-  #editFormModalContent {
-    width: 95%; /* Full width on small screens */
-    margin: 5% auto; /* Adjust margin */
-  }
+        #editFormModalContent {
+          width: 95%;
+          margin: 5% auto;
+        }
 
-  table {
-    font-size: 14px; /* Smaller font size for mobile */
-  }
+        table {
+          font-size: 14px;
+        }
 
-  th, td {
-    padding: 6px; /* Less padding for mobile */
-  }
+        th,
+        td {
+          padding: 6px;
+        }
 
-  form input[type="submit"] {
-    padding: 8px; /* Smaller button padding */
-  }
-}
+        form input[type="submit"] {
+          padding: 8px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -196,7 +225,12 @@
                         <td>${client.broker}</td>
                         <td>${client.date ? formatDateFromInput(client.date) : ''}</td>
                         <td>${client.status}</td>
-                        <td><button class="editBtn" data-index="${index}">Edit</button></td>
+                        <td>
+                            <button class="btn editBtn" data-index="${index}">Edit</button>
+                            <button class="btn whatsappBtn" data-phone="${client.phone}">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </td>
                     `;
             tableBody.appendChild(row);
           });
@@ -208,6 +242,13 @@
               const index = e.target.dataset.index;
               const client = data[index];
               openEditForm(client, index);
+            });
+          });
+          const whatsappButtons = document.querySelectorAll(".whatsappBtn");
+          whatsappButtons.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              const phone = e.target.dataset.phone;
+              sendWhatsAppMessage(phone);
             });
           });
         })
@@ -285,6 +326,13 @@
         document.getElementById("editFormModal").style.display = "none";
       });
 
+
+      // Send WhatsApp message function
+      function sendWhatsAppMessage(phone) {
+        const message = encodeURIComponent("Hello, I am reaching out regarding your interest. How can I assist you?");
+        const whatsappURL = `https://wa.me/${phone}?text=${message}`;
+        window.open(whatsappURL, "_blank");
+      }
 
 
       function formatDateTime(date) {

@@ -258,10 +258,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./scripts/script.js"></script>
     <script>
+        // Call getFollowUps once when the page loads
+window.onload = async function() {
+    await getFollowUps();  // Wait for the fetch to complete
+    updateDashboard();     // Update the dashboard after the data is fetched
+};
         
 
-// Call getFollowUps when ready (e.g., on page load)
-getFollowUps();
         // Chart.js setup
         const ctx = document.getElementById('myChart').getContext('2d');
         const myChart = new Chart(ctx, {
