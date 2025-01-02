@@ -1,304 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <!-- Font Awesome for Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f1f1f1;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f1f1f1;
+      }
 
+      /* Sidebar */
+      .sidebar {
+        width: 250px;
+        height: 100vh;
+        background-color: #2f2f2f;
+        color: white;
+        padding: 20px;
+        position: fixed;
+        transition: transform 0.3s ease-in-out;
+        z-index: 10;
+      }
+
+      .sidebar h2 {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .sidebar a {
+        color: white;
+        text-decoration: none;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+        margin: 5px 0;
+      }
+
+      .sidebar a i {
+        margin-right: 10px;
+      }
+
+      .sidebar a:hover {
+        background-color: #575757;
+      }
+
+      .sidebar.closed {
+        transform: translateX(-250px);
+      }
+
+      .sidebar .menu-item {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .sidebar .menu-item .menu-text {
+        margin-left: 10px;
+        display: inline-block;
+      }
+
+      /* Content */
+      .content {
+        margin-left: 290px;
+        padding: 20px;
+        transition: margin-left 0.3s ease-in-out;
+        transition: padding-left 0.3s ease;
+        background-color: #fdb058;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        margin: 0;
+      }
+
+      .hamburger {
+        display: none;
+        cursor: pointer;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 20px;
+        width: 25px;
+      }
+
+      .hamburger div {
+        height: 4px;
+        background-color: #333;
+        border-radius: 5px;
+      }
+
+      /* Cards */
+      .cards {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .card {
+        background-color: white;
+        padding: 20px;
+        margin: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        flex-basis: 30%;
+        text-align: center;
+      }
+      .card a {
+        text-decoration: none;
+        color: green;
+        font-weight: 900;
+      }
+
+      /* Chart */
+      .chart {
+        height: 400px;
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: #2f2f2f;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+      }
+
+      /* Mobile responsiveness */
+      @media (max-width: 768px) {
         /* Sidebar */
         .sidebar {
-            width: 250px;
-            height: 100vh;
-            background-color: #2f2f2f;
-            color: white;
-            padding: 20px;
-            position: fixed;
-            transition: transform 0.3s ease-in-out;
-            z-index: 10;
+          width: 60px; /* Show only icons on mobile */
+          transition: width 0.3s ease;
         }
 
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            text-align: left;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-            margin: 5px 0;
-        }
-
-        .sidebar a i {
-            margin-right: 10px;
-        }
-
-        .sidebar a:hover {
-            background-color: #575757;
-        }
-
-        .sidebar.closed {
-            transform: translateX(-250px);
-        }
-
-        .sidebar .menu-item {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .sidebar .menu-item .menu-text {
-            margin-left: 10px;
-            display: inline-block;
-        }
-
-        /* Content */
         .content {
-            margin-left: 290px;
-            padding: 20px;
-            transition: margin-left 0.3s ease-in-out;
-            transition: padding-left 0.3s ease;
-            background-color: #fdb058;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            margin: 0;
+          margin-left: 100px; /* Adjust content to fit the smaller sidebar */
+          padding: 0.5em;
         }
 
         .hamburger {
-            display: none;
-            cursor: pointer;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 20px;
-            width: 25px;
+          display: flex;
         }
 
-        .hamburger div {
-            height: 4px;
-            background-color: #333;
-            border-radius: 5px;
+        /* Hide text on mobile */
+        .sidebar a .menu-text {
+          display: none;
+        }
+
+        /* Show text when the sidebar is expanded */
+        .sidebar.closed .menu-text {
+          display: inline-block;
         }
 
         /* Cards */
         .cards {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: space-between;
+          flex-direction: column;
         }
 
         .card {
-            background-color: white;
-            padding: 20px;
-            margin: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            flex-basis: 30%;
-            text-align: center;
+          flex-basis: 100%;
+          margin: 0px;
         }
-
-        /* Chart */
         .chart {
-            height: 400px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
+          height: 300px;
+          margin: 10px 0px;
         }
-
-        /* Footer */
-        .footer {
-            background-color: #2f2f2f;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            /* Sidebar */
-            .sidebar {
-                width: 60px; /* Show only icons on mobile */
-                transition: width 0.3s ease;
-            }
-
-            .content {
-                margin-left: 100px; /* Adjust content to fit the smaller sidebar */
-                padding: 0.5em;
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            /* Hide text on mobile */
-            .sidebar a .menu-text {
-                display: none;
-            }
-
-            /* Show text when the sidebar is expanded */
-            .sidebar.closed .menu-text {
-                display: inline-block;
-            }
-
-            /* Cards */
-            .cards {
-                flex-direction: column;
-            }
-
-            .card {
-                flex-basis: 100%;
-                margin: 0px;
-            }
-            .chart{
-                height: 300px;
-                margin: 10px 0px;
-            }
-        }
-
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="sidebar" id="sidebar">
-        <h2>Admin</h2>
-        <a href="contactedClients.html">
-            <i class="fas fa-users"></i>
-            <span class="menu-text">All Clients</span>
-        </a>
-        <a href="recent.html">
-            <i class="fas fa-clock"></i>
-            <span class="menu-text">Recent Clients</span>
-        </a>
-        <a href="recommended.html">
-            <i class="fas fa-star"></i>
-            <span class="menu-text">Recommended Follow-ups</span>
-        </a>
-        <a href="other-feature.html">
-            <i class="fas fa-cogs"></i>
-            <span class="menu-text">Other Feature</span>
-        </a>
-        <a href="addFollowUp.html">
-            <i class="fas fa-plus-circle"></i>
-            <span class="menu-text">Add Follow Up</span>
-        </a>
-        <a href="updateFollowUp.html">
-            <i class="fas fa-edit"></i>
-            <span class="menu-text">Update Follow Up</span>
-        </a>
+      <h2>Admin</h2>
+      <a href="contactedClients.html">
+        <i class="fas fa-users"></i>
+        <span class="menu-text">All Clients</span>
+      </a>
+      <a href="recent.html">
+        <i class="fas fa-clock"></i>
+        <span class="menu-text">Recent Clients</span>
+      </a>
+      <a href="recommended.html">
+        <i class="fas fa-star"></i>
+        <span class="menu-text">Recommended Follow-ups</span>
+      </a>
+      <a href="./visitedClients.html">
+        <i class="fas fa-cogs"></i>
+        <span class="menu-text">Other Feature</span>
+      </a>
+      <a href="addFollowUp.html">
+        <i class="fas fa-plus-circle"></i>
+        <span class="menu-text">Add Follow Up</span>
+      </a>
+      <a href="updateFollowUp.html">
+        <i class="fas fa-edit"></i>
+        <span class="menu-text">Update Follow Up</span>
+      </a>
     </div>
 
     <div class="content">
-        <div class="header">
-            <h1>Dashboard Overview</h1>
-            <div class="hamburger" id="hamburger">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
+      <div class="header">
+        <h1>Dashboard Overview</h1>
+        <div class="hamburger" id="hamburger">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card" id="open">
+          <h3>0</h3>
+          <a href=""><p>Open</p></a>
         </div>
 
-        <div class="cards">
-            <div class="card" id="open">
-                <h3>15</h3>
-                <p>Open</p>
-            </div>
-            
-            <div class="card" id="recommended">
-                <h3>20</h3>
-                <p>Recommended</p>
-            </div>
-            <div class="card" id="closed">
-                <h3>30</h3>
-                <p>Closed</p>
-            </div>
-            <div class="card" id="visits">
-                <h3>70</h3>
-                <p>Visited</p>
-            </div>
-            <div class="card" id="contactedClients">
-                <h3>320</h3>
-                <p>Total Contacted</p>
-            </div>
+        <div class="card" id="recommended">
+          <h3>0</h3>
+          <a href="./recommended.html"><p>Recommended</p></a>
         </div>
+        <div class="card" id="closed">
+          <h3>0</h3>
+          <a href=""><p>Closed</p></a>
+        </div>
+        <div class="card" id="visits">
+          <h3>0</h3>
+          <a href="./visitedClients.html"><p>Visited</p></a>
+        </div>
+        <div class="card" id="contactedClients">
+          <h3>0</h3>
+          <a href="./contactedClients.html"><p>Total Contacted</p></a>
+        </div>
+      </div>
 
-        <div class="chart" id="chartContainer">
-            <h2>Monthly Traffic</h2>
-            <canvas id="myChart"></canvas>
-        </div>
+      <div class="chart" id="chartContainer">
+        <h2>Monthly Traffic</h2>
+        <canvas id="myChart"></canvas>
+      </div>
     </div>
 
     <div class="footer">
-        <p>© 2025 My Dashboard</p>
+      <p>© 2025 My Dashboard</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./scripts/script.js"></script>
     <script>
-        // Call getFollowUps once when the page loads
-window.onload = async function() {
-    await getFollowUps();  // Wait for the fetch to complete
-    await getVisits();
-    updateDashboard();     // Update the dashboard after the data is fetched
-};
-        
+      // Call getFollowUps once when the page loads
+      window.onload = async function () {
+        // Check if followUpsData exists in localStorage, and if so, use it
+        if (!followUpsData) {
+          await getFollowUps(); // Fetch data if not in localStorage
+        }
+        if (!visitsData) {
+          await getVisits();
+        }
 
-        // Chart.js setup
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Monthly Traffic',
-                    data: [12, 19, 3, 5, 2, 3],
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1
-                }]
+        updateDashboard(); // Update the dashboard after the data is fetched or from localStorage
+      };
+
+      // Chart.js setup
+      const ctx = document.getElementById("myChart").getContext("2d");
+      const myChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+          datasets: [
+            {
+              label: "Monthly Traffic",
+              data: [12, 19, 3, 5, 2, 3],
+              borderColor: "rgba(75, 192, 192, 1)",
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              borderWidth: 1,
             },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
 
-        // Hamburger menu toggle
-        const sidebar = document.getElementById('sidebar');
-        const hamburger = document.getElementById('hamburger');
+      // Hamburger menu toggle
+      const sidebar = document.getElementById("sidebar");
+      const hamburger = document.getElementById("hamburger");
 
-        hamburger.addEventListener('click', () => {
-            sidebar.classList.toggle('closed');
-            const content = document.querySelector('.content');
-            content.style.marginLeft = sidebar.classList.contains('closed') ? '60px' : '250px';
-        });
+      hamburger.addEventListener("click", () => {
+        sidebar.classList.toggle("closed");
+        const content = document.querySelector(".content");
+        content.style.marginLeft = sidebar.classList.contains("closed")
+          ? "60px"
+          : "250px";
+      });
+
+      // Store data in localStorage after fetching from the API
+      async function getFollowUps() {
+        try {
+          const response = await fetch(`${scriptURL}?action=getFollowUps`);
+          const data = await response.json();
+          followUpsData = data; // Store the data in the global variable
+          localStorage.setItem("followUpsData", JSON.stringify(followUpsData)); // Store data in localStorage
+        } catch (error) {
+          console.error("Error fetching follow-ups:", error);
+        }
+      }
+
+      async function getVisits() {
+        try {
+          const response = await fetch(`${scriptURL}?action=getVisits`);
+          const data = await response.json();
+          visitsData = data;
+          localStorage.setItem("visitsData", JSON.stringify(visitsData)); // Store data in localStorage
+        } catch (error) {
+          alert("Error in getting visits : " + error);
+        }
+      }
+
+      // Function to process and update the dashboard
+      function updateDashboard() {
+        if (followUpsData) {
+          contactedClients.textContent = followUpsData.length;
+          recommended(followUpsData);
+          open(followUpsData);
+          closedFollowUps(followUpsData);
+        } else {
+          console.log("No follow-ups data available yet.");
+        }
+
+        if (visitsData) {
+          allVisits.textContent = visitsData.length;
+        }
+      }
+
+      // Example of using localStorage for persisted data
+      followUpsData = JSON.parse(localStorage.getItem("followUpsData")) || null;
+      visitsData = JSON.parse(localStorage.getItem("visitsData")) || null;
     </script>
-</body>
+  </body>
 </html>
