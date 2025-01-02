@@ -1,4 +1,4 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwjfceoeNeTOOPZY-ijuz6ZeINsjPC5BvfPUYJ9YAhJBU6RXd1CR8Ep6NEIExkWcwrPAQ/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbxYXEToiiKBdxPzqUfaIHxX0lPYMt7RAQ8YEd2pou4fnB5aCzLbzex_JqgX7LjNzNy_6A/exec';
 
 const contactedClients = document.querySelector("#contactedClients h3");
 const allVisits = document.querySelector('#visits h3');
@@ -27,6 +27,7 @@ async function getVisits() {
         visitsData = data;
         // Store data in localStorage for future use
         localStorage.setItem('visitsData', JSON.stringify(visitsData));
+        // window.location.reload()
     } catch (error) {
         alert('Error in getting visits : ' + error);
     }
@@ -42,7 +43,7 @@ function recommended(data) {
     }, 0);
 
     const recommended = document.querySelector("#recommended h3");
-    recommended.textContent = recommend;
+    recommended ? recommended.textContent = recommend : "";
 }
 
 // Function to process the data and update the DOM
@@ -55,7 +56,7 @@ function open(data) {
     }, 0);
 
     const openFollowUps = document.querySelector("#open h3");
-    openFollowUps.textContent = recommend;
+    openFollowUps ? openFollowUps.textContent = recommend : "";
 }
 
 // Function to process the data and update the DOM
@@ -68,7 +69,7 @@ function closedFollowUps(data) {
     }, 0);
 
     const closedFollowUps = document.querySelector("#closed h3");
-    closedFollowUps.textContent = recommend;
+    closedFollowUps ? closedFollowUps.textContent = recommend : "";
 }
 
 // Format date from input string to M/D/YYYY format
@@ -83,7 +84,7 @@ function formatDateFromInput(inputDate) {
 // Update the dashboard with the fetched data
 function updateDashboard() {
     if (followUpsData) {
-        contactedClients.textContent = followUpsData.length;
+        contactedClients? contactedClients.textContent = followUpsData.length : "";
         recommended(followUpsData);
         open(followUpsData);
         closedFollowUps(followUpsData);
@@ -92,7 +93,7 @@ function updateDashboard() {
     }
 
     if (visitsData) {
-        allVisits.textContent = visitsData.length;
+        allVisits ? allVisits.textContent = visitsData.length : '';
     }
 }
 
@@ -108,3 +109,16 @@ async function loadAndUpdateData() {
 
 // Call the function to load data initially when the page loads
 loadAndUpdateData();
+
+// Call getFollowUps once when the page loads
+window.onload = async function () {
+    // Check if followUpsData exists in localStorage, and if so, use it
+    if (!followUpsData) {
+      await getFollowUps(); // Fetch data if not in localStorage
+    }
+    if (!visitsData) {
+      await getVisits();
+    }
+
+    updateDashboard(); // Update the dashboard after the data is fetched or from localStorage
+  };

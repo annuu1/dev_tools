@@ -206,15 +206,10 @@
 
     <script src="./scripts/script.js"></script>
     <script>
-      // Fetch data from the provided URL
-      fetch(`${scriptURL}?action=getFollowUps`)
-        .then((response) => response.json())
-        .then((data) => {
           const tableBody = document.querySelector("#clientsTable tbody");
           tableBody.innerHTML = ""; // Clear any existing content
-
-          // Populate the table with data
-          data.forEach((client, index) => {
+          
+          followUpsData.forEach((client, index) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                         <td>${new Date(client.lastContact).toLocaleString()}</td>
@@ -251,12 +246,12 @@
               sendWhatsAppMessage(phone);
             });
           });
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-          const tableBody = document.querySelector("#clientsTable tbody");
-          tableBody.innerHTML = '<tr><td colspan="7">Failed to load data.</td></tr>';
-        });
+        // )
+        // .catch((error) => {
+        //   console.error("Error fetching data:", error);
+        //   const tableBody = document.querySelector("#clientsTable tbody");
+        //   tableBody.innerHTML = '<tr><td colspan="7">Failed to load data.</td></tr>';
+        // });
 
       // Function to open the edit form in the modal
       function openEditForm(client, index) {

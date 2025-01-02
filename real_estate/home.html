@@ -265,18 +265,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./scripts/script.js"></script>
     <script>
-      // Call getFollowUps once when the page loads
-      window.onload = async function () {
-        // Check if followUpsData exists in localStorage, and if so, use it
-        if (!followUpsData) {
-          await getFollowUps(); // Fetch data if not in localStorage
-        }
-        if (!visitsData) {
-          await getVisits();
-        }
-
-        updateDashboard(); // Update the dashboard after the data is fetched or from localStorage
-      };
+      
 
       // Chart.js setup
       const ctx = document.getElementById("myChart").getContext("2d");
