@@ -1,4 +1,4 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbxYXEToiiKBdxPzqUfaIHxX0lPYMt7RAQ8YEd2pou4fnB5aCzLbzex_JqgX7LjNzNy_6A/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbw9fDxBpJp1gGuBgpRMkDFNK3o5uP2yB30-pZfTIO1aT_mS6ydLqWA1BudtQ-FBB3yP/exec';
 
 const contactedClients = document.querySelector("#contactedClients h3");
 const allVisits = document.querySelector('#visits h3');

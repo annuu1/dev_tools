@@ -235,7 +235,7 @@
           editButtons.forEach((btn) => {
             btn.addEventListener("click", (e) => {
               const index = e.target.dataset.index;
-              const client = data[index];
+              const client = followUpsData[index];
               openEditForm(client, index);
             });
           });

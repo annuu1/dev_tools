@@ -160,6 +160,12 @@
         <button class="modal-close" id="closeModal">X</button>
         <h2>Edit Client Information</h2>
         <form id="editForm">
+          <label for="hostName">Host Name:</label>
+          <select name="hostName" id="hostName">
+            <option value="Bindu">Bindu</option>
+            <option value="Pooja">Pooja</option>
+          </select>
+
           <label for="editName">Name:</label>
           <input type="text" id="editName" name="name" required /><br />
 
@@ -205,15 +211,11 @@
 
     <script src="./scripts/script.js"></script>
     <script>
-      // Fetch data from the provided URL
-      fetch(`${scriptURL}?action=getVisits`)
-        .then((response) => response.json())
-        .then((data) => {
           const tableBody = document.querySelector("#clientsTable tbody");
           tableBody.innerHTML = ""; // Clear any existing content
 
           // Populate the table with data
-          data.forEach((client, index) => {
+          visitsData.forEach((client, index) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                         <td>${new Date(client.lastContact).toLocaleString()}</td>
@@ -240,7 +242,7 @@
           editButtons.forEach((btn) => {
             btn.addEventListener("click", (e) => {
               const index = e.target.dataset.index;
-              const client = data[index];
+              const client = visitsData[index];
               openEditForm(client, index);
             });
           });
@@ -252,15 +254,10 @@
               sendWhatsAppMessage(phone);
             });
           });
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-          const tableBody = document.querySelector("#clientsTable tbody");
-          tableBody.innerHTML = '<tr><td colspan="7">Failed to load data.</td></tr>';
-        });
 
       // Function to open the edit form in the modal
       function openEditForm(client, index) {
+        document.getElementById("hostName").value = client.host;
         document.getElementById("editFormModal").style.display = "block";
         document.getElementById("editName").value = client.name;
         document.getElementById("editPhone").value = client.phone;
@@ -273,6 +270,7 @@
         document.getElementById("editForm").onsubmit = function (e) {
           e.preventDefault();
           const formData = {
+            host: document.getElementById('hostName').value,
             lastContact: formatDateTime(new Date()),
             name: document.getElementById("editName").value,
             phone: document.getElementById("editPhone").value,
@@ -284,7 +282,7 @@
           };
 
           fetch(
-            `${scriptURL}?action=updateVisits&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
+            `${scriptURL}?action=updateVisit&host=${formData.host}&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
           )
             .then((response) => response.json())
             .then((data) => {
@@ -302,6 +300,23 @@
           document.getElementById("editFormModal").style.display = "none";
         };
       }
+
+      // Close modal when clicking on "Cancel" button or close icon
+      document.getElementById("cancelEdit").addEventListener("click", () => {
+        document.getElementById("editFormModal").style.display = "none";
+      });
+
+      // Close modal when clicking outside the modal content
+      document.getElementById("editFormModal").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("editFormModal")) {
+          document.getElementById("editFormModal").style.display = "none";
+        }
+      });
+
+      // Close modal when clicking the "X" button
+      document.getElementById("closeModal").addEventListener("click", () => {
+        document.getElementById("editFormModal").style.display = "none";
+      });
 
       // Send WhatsApp message function
       function sendWhatsAppMessage(phone) {
