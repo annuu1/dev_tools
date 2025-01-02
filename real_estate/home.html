@@ -222,7 +222,7 @@
         </div>
 
         <div class="cards">
-            <div class="card">
+            <div class="card" id="open">
                 <h3>15</h3>
                 <p>Open</p>
             </div>
@@ -231,11 +231,11 @@
                 <h3>20</h3>
                 <p>Recommended</p>
             </div>
-            <div class="card">
+            <div class="card" id="closed">
                 <h3>30</h3>
                 <p>Closed</p>
             </div>
-            <div class="card">
+            <div class="card" id="visits">
                 <h3>70</h3>
                 <p>Visited</p>
             </div>
@@ -261,6 +261,7 @@
         // Call getFollowUps once when the page loads
 window.onload = async function() {
     await getFollowUps();  // Wait for the fetch to complete
+    await getVisits();
     updateDashboard();     // Update the dashboard after the data is fetched
 };
         
