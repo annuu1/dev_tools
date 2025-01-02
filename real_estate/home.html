@@ -306,47 +306,47 @@
       });
 
       // Store data in localStorage after fetching from the API
-      async function getFollowUps() {
-        try {
-          const response = await fetch(`${scriptURL}?action=getFollowUps`);
-          const data = await response.json();
-          followUpsData = data; // Store the data in the global variable
-          localStorage.setItem("followUpsData", JSON.stringify(followUpsData)); // Store data in localStorage
-        } catch (error) {
-          console.error("Error fetching follow-ups:", error);
-        }
-      }
+    //   async function getFollowUps() {
+    //     try {
+    //       const response = await fetch(`${scriptURL}?action=getFollowUps`);
+    //       const data = await response.json();
+    //       followUpsData = data; // Store the data in the global variable
+    //       localStorage.setItem("followUpsData", JSON.stringify(followUpsData)); // Store data in localStorage
+    //     } catch (error) {
+    //       console.error("Error fetching follow-ups:", error);
+    //     }
+    //   }
 
-      async function getVisits() {
-        try {
-          const response = await fetch(`${scriptURL}?action=getVisits`);
-          const data = await response.json();
-          visitsData = data;
-          localStorage.setItem("visitsData", JSON.stringify(visitsData)); // Store data in localStorage
-        } catch (error) {
-          alert("Error in getting visits : " + error);
-        }
-      }
+    //   async function getVisits() {
+    //     try {
+    //       const response = await fetch(`${scriptURL}?action=getVisits`);
+    //       const data = await response.json();
+    //       visitsData = data;
+    //       localStorage.setItem("visitsData", JSON.stringify(visitsData)); // Store data in localStorage
+    //     } catch (error) {
+    //       alert("Error in getting visits : " + error);
+    //     }
+    //   }
 
       // Function to process and update the dashboard
-      function updateDashboard() {
-        if (followUpsData) {
-          contactedClients.textContent = followUpsData.length;
-          recommended(followUpsData);
-          open(followUpsData);
-          closedFollowUps(followUpsData);
-        } else {
-          console.log("No follow-ups data available yet.");
-        }
+    //   function updateDashboard() {
+    //     if (followUpsData) {
+    //       contactedClients.textContent = followUpsData.length;
+    //       recommended(followUpsData);
+    //       openedFollowUps(followUpsData);
+    //       closedFollowUps(followUpsData);
+    //     } else {
+    //       console.log("No follow-ups data available yet.");
+    //     }
 
-        if (visitsData) {
-          allVisits.textContent = visitsData.length;
-        }
-      }
+    //     if (visitsData) {
+    //       allVisits.textContent = visitsData.length;
+    //     }
+    //   }
 
       // Example of using localStorage for persisted data
-      followUpsData = JSON.parse(localStorage.getItem("followUpsData")) || null;
-      visitsData = JSON.parse(localStorage.getItem("visitsData")) || null;
+    //   followUpsData = JSON.parse(localStorage.getItem("followUpsData")) || null;
+    //   visitsData = JSON.parse(localStorage.getItem("visitsData")) || null;
     </script>
   </body>
 </html>
