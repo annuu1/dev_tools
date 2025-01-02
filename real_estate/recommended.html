@@ -186,7 +186,7 @@
 
           // Populate the table with data
           data.forEach((client, index) => {
-            if(formatDateFromInput(client.date)===formatDateFromInput(new Date())){
+            if(formatDateFromInput(client.date)===formatDateFromInput(new Date()) && client.status != 'Closed'){
                 const row = document.createElement("tr");
             row.innerHTML = `
                         <td>${new Date(client.lastContact).toLocaleString()}</td>
@@ -200,6 +200,11 @@
                         <td><button class="editBtn" data-index="${index}">Edit</button></td>
                     `;
             tableBody.appendChild(row);
+            }
+            else{
+              const message = document.createElement('p')
+              message.textContent = 'Not found!'
+              tableBody.appendChild(message)
             }
             
           });
