@@ -127,7 +127,7 @@
       <h1>Contacted Clients and Follow-ups</h1>
       <div class="btns">
         <a href="./home.html" class="btn">Home</a>
-        <a href="./addFollowUp.html" class="btn">Add</a>
+        <a href="./addVisit.html" class="btn">Add</a>
       </div>
     </header>
     <main>
@@ -216,7 +216,8 @@
 
           // Populate the table with data
           visitsData.forEach((client, index) => {
-            const row = document.createElement("tr");
+            if(client.phone){
+              const row = document.createElement("tr");
             row.innerHTML = `
                         <td>${new Date(client.lastContact).toLocaleString()}</td>
                         <td>${client.name}</td>
@@ -235,6 +236,8 @@
                         </td>
                     `;
             tableBody.appendChild(row);
+            }
+            
           });
 
           // Add event listeners for the "Edit" and "Send WhatsApp" buttons
