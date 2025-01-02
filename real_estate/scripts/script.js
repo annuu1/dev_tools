@@ -47,7 +47,7 @@ function recommended(data) {
 }
 
 // Function to process the data and update the DOM
-function open(data) {
+function openedFollowUps(data) {
     const recommend = data.reduce((acc, element) => {
         if (element.status === 'Open') {
             acc += 1;
@@ -86,7 +86,7 @@ function updateDashboard() {
     if (followUpsData) {
         contactedClients? contactedClients.textContent = followUpsData.length : "";
         recommended(followUpsData);
-        open(followUpsData);
+        openedFollowUps(followUpsData);
         closedFollowUps(followUpsData);
     } else {
         console.log('No follow-ups data available yet.');
