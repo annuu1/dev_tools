@@ -30,6 +30,7 @@
               <th>Note</th>
               <th>Broker</th>
               <th>Date</th>
+              <th>Host</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -47,6 +48,12 @@
         <button class="modal-close" id="closeModal">X</button>
         <h2>Edit Client Information</h2>
         <form id="editForm">
+          <label for="hostName">Name:</label>
+          <select name="hostName" id="hostName">
+            <option value="Bindu">Bindu</option>
+            <option value="Pooja">Pooja</option>
+          </select>
+          
           <label for="editName">Name:</label>
           <input type="text" id="editName" name="name" required /><br />
 
@@ -110,6 +117,7 @@
                         <td>${client.note}</td>
                         <td>${client.broker}</td>
                         <td>${client.date ? formatDateFromInput(client.date) : ''}</td>
+                        <td>${client.host}</td>
                         <td>${client.status}</td>
                          <td>
                             <button class="btn editBtn" data-index="${index}">Edit</button>
@@ -144,6 +152,7 @@
         // console.log(formatDateFromInput(client.date));
         
         document.getElementById("editFormModal").style.display = "block";
+        document.getElementById("editFormModal").style.display = "block";
         document.getElementById("editName").value = client.name;
         document.getElementById("editPhone").value = client.phone;
         document.getElementById("editInterest").value = client.interest;
@@ -156,6 +165,7 @@
         document.getElementById("editForm").onsubmit = function (e) {
           e.preventDefault();
           const formData = {
+            host: document.getElementById("hostName").value,
             lastContact: formatDateTime(new Date()),
             name: document.getElementById("editName").value,
             phone: document.getElementById("editPhone").value,
@@ -168,7 +178,7 @@
 
           
           fetch(
-            `${scriptURL}?action=updateFollowUp&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
+            `${scriptURL}?action=updateVisit&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}&status=${formData.host}`
           )
             .then((response) => response.json())
             .then((data) => {

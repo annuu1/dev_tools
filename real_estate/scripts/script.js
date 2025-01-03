@@ -72,6 +72,18 @@ function recommended(data) {
     recommended ? recommended.textContent = recommend : "";
 }
 
+function recommendedVisits(data) {
+    const recommend = data.reduce((acc, element) => {
+        if (isDateLessThanOrEqualToToday(element.date) && element.status != 'Closed') {
+            acc += 1;
+        }
+        return acc;
+    }, 0);
+
+    const recommended = document.querySelector("#recommendedVisits h3");
+    recommended ? recommended.textContent = recommend : "";
+}
+
 // Function to process the data and update the DOM
 function openedFollowUps(data) {
     const recommend = data.reduce((acc, element) => {
@@ -112,6 +124,8 @@ function updateDashboard() {
     if (followUpsData) {
         contactedClients? contactedClients.textContent = followUpsData.length : "";
         recommended(followUpsData);
+        recommendedVisits(visitsData);
+
         openedFollowUps(followUpsData);
         closedFollowUps(followUpsData);
     } else {
