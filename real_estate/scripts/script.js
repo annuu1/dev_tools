@@ -33,10 +33,36 @@ async function getVisits() {
     }
 }
 
+
+      // Function to check if the date is less than or equal to today
+      function isDateLessThanOrEqualToToday(inputDate) {
+        const date = new Date(inputDate)
+        // console.log(date);
+        
+        const today = new Date();
+        if(date.getFullYear()< today.getFullYear()){
+      
+          return true;
+        }else if(date.getFullYear()=== today.getFullYear())
+        {    
+          if(date.getMonth() < today.getMonth()){
+      
+            return true;
+      
+            }else if(date.getMonth() === today.getMonth()){
+            if(date.getDate()<= today.getDate()){
+            // console.log(date.getDate());
+            return true;
+           }
+        }
+        }
+      }
+
+      
 // Function to process the data and update the DOM
 function recommended(data) {
     const recommend = data.reduce((acc, element) => {
-        if (formatDateFromInput(element.date) === formatDateFromInput(new Date())) {
+        if (isDateLessThanOrEqualToToday(element.date) && element.status != 'Closed') {
             acc += 1;
         }
         return acc;

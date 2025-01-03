@@ -4,153 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contacted Clients</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/displayData.css" />
     <!-- Font Awesome CDN for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./css/styles.css" />
-    <style>
-      * {
-        box-sizing: border-box;
-      }
-    
-      /* Modal Styling */
-      #editFormModal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
-      }
-    
-      #editFormModalContent {
-        background-color: #fff;
-        margin: 5% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 50%;
-        max-height: 90%;
-        display: flex;
-        flex-direction: column;
-        overflow: auto;
-      }
-    
-      .modal-close {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #f44336;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        font-size: 18px;
-        cursor: pointer;
-      }
-    
-      .modal-close:hover {
-        background-color: #d32f2f;
-      }
-    
-      form {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-      }
-    
-      form label {
-        display: block;
-        margin: 10px 0 5px;
-      }
-    
-      form input,
-      form textarea,
-      form select {
-        width: 100%;
-        padding: 8px;
-        margin: 5px 0 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-    
-      form input[type="submit"] {
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-      }
-    
-      form input[type="submit"]:hover {
-        background-color: #45a049;
-      }
-    
-      /* Ensure the buttons are not hidden */
-      #cancelEdit {
-        margin-top: 10px;
-        padding: 8px 16px;
-        background-color: #f44336;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-    
-      #cancelEdit:hover {
-        background-color: #d32f2f;
-      }
-    
-      /* WhatsApp Button Styling */
-      .btn {
-        min-width: 100px;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        cursor: pointer;
-        border-radius: 4px;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-      }
-    
-      .editBtn {
-        background-color: #60d4e9;
-      }
-    
-      .whatsappBtn {
-        background-color: #25d366;
-      }
-    
-      .whatsappBtn i {
-        margin-right: 8px;
-      }
-    
-      .whatsappBtn:hover {
-        background-color: #128c7e;
-      }
-    
-      @media (max-width: 600px) {
-        #editFormModalContent {
-          width: 95%;
-          margin: 5% auto;
-        }
-    
-        table {
-          font-size: 14px;
-        }
-    
-        th,
-        td {
-          padding: 6px;
-        }
-    
-        form input[type="submit"] {
-          padding: 8px;
-        }
-      }
-    </style>
-    
   </head>
   <body>
     <header>
@@ -236,11 +93,15 @@
 
     <script src="./scripts/script.js"></script>
     <script>
-          const tableBody = document.querySelector("#clientsTable tbody");
-          tableBody.innerHTML = ""; // Clear any existing content
-          
-          followUpsData.forEach((client, index) => {
-            const row = document.createElement("tr");
+      const tableBody = document.querySelector("#clientsTable tbody");
+      tableBody.innerHTML = ""; // Clear any existing content
+
+
+      visitsData.forEach((client, index) => {
+
+            if(isDateLessThanOrEqualToToday(client.date) && client.status != 'Closed'){
+              
+                const row = document.createElement("tr");
             row.innerHTML = `
                         <td>${new Date(client.lastContact).toLocaleString()}</td>
                         <td>${client.name}</td>
@@ -250,7 +111,7 @@
                         <td>${client.broker}</td>
                         <td>${client.date ? formatDateFromInput(client.date) : ''}</td>
                         <td>${client.status}</td>
-                        <td>
+                         <td>
                             <button class="btn editBtn" data-index="${index}">Edit</button>
                             <button class="btn whatsappBtn" data-phone="${client.phone}">
                                 <i class="fab fa-whatsapp"></i>
@@ -258,6 +119,7 @@
                         </td>
                     `;
             tableBody.appendChild(row);
+            }            
           });
 
           // Add event listeners for the "Edit" buttons
@@ -265,7 +127,7 @@
           editButtons.forEach((btn) => {
             btn.addEventListener("click", (e) => {
               const index = e.target.dataset.index;
-              const client = followUpsData[index];
+              const client = visitsData[index];
               openEditForm(client, index);
             });
           });
@@ -276,12 +138,6 @@
               sendWhatsAppMessage(phone);
             });
           });
-        // )
-        // .catch((error) => {
-        //   console.error("Error fetching data:", error);
-        //   const tableBody = document.querySelector("#clientsTable tbody");
-        //   tableBody.innerHTML = '<tr><td colspan="7">Failed to load data.</td></tr>';
-        // });
 
       // Function to open the edit form in the modal
       function openEditForm(client, index) {
@@ -316,7 +172,7 @@
           )
             .then((response) => response.json())
             .then((data) => {
-              console.log(data);
+              // console.log(data);
               if (data.success) {
                 alert("Client details submitted successfully!");
                 this.reset(); // Reset the form after submission
@@ -351,13 +207,13 @@
         document.getElementById("editFormModal").style.display = "none";
       });
 
-
-      // Send WhatsApp message function
-      function sendWhatsAppMessage(phone) {
+       // Send WhatsApp message function
+       function sendWhatsAppMessage(phone) {
         const message = encodeURIComponent("May the new year bring you fresh starts, exciting journeys, and unforgettable memories, and may our partnership continue to flourish");
         const whatsappURL = `https://wa.me/${phone}?text=${message}`;
         window.open(whatsappURL, "_blank");
       }
+
 
 
       function formatDateTime(date) {

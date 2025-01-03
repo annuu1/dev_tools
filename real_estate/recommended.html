@@ -6,6 +6,8 @@
     <title>Contacted Clients</title>
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/displayData.css" />
+    <!-- Font Awesome CDN for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
   </head>
   <body>
     <header>
@@ -95,30 +97,6 @@
       tableBody.innerHTML = ""; // Clear any existing content
 
 
-      // Function to check if the date is less than or equal to today
-function isDateLessThanOrEqualToToday(inputDate) {
-  const date = new Date(inputDate)
-  // console.log(date);
-  
-  const today = new Date();
-  if(date.getFullYear()< today.getFullYear()){
-
-    return true;
-  }else if(date.getFullYear()=== today.getFullYear())
-  {    
-    if(date.getMonth() < today.getMonth()){
-
-      return true;
-
-      }else if(date.getMonth() === today.getMonth()){
-      if(date.getDate()<= today.getDate()){
-      console.log(date.getDate());
-      return true;
-     }
-  }
-  }
-}
-
           followUpsData.forEach((client, index) => {
 
             if(isDateLessThanOrEqualToToday(client.date) && client.status != 'Closed'){
@@ -133,7 +111,12 @@ function isDateLessThanOrEqualToToday(inputDate) {
                         <td>${client.broker}</td>
                         <td>${client.date ? formatDateFromInput(client.date) : ''}</td>
                         <td>${client.status}</td>
-                        <td><button class="editBtn" data-index="${index}">Edit</button></td>
+                         <td>
+                            <button class="btn editBtn" data-index="${index}">Edit</button>
+                            <button class="btn whatsappBtn" data-phone="${client.phone}">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </td>
                     `;
             tableBody.appendChild(row);
             }            
@@ -146,6 +129,13 @@ function isDateLessThanOrEqualToToday(inputDate) {
               const index = e.target.dataset.index;
               const client = followUpsData[index];
               openEditForm(client, index);
+            });
+          });
+          const whatsappButtons = document.querySelectorAll(".whatsappBtn");
+          whatsappButtons.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              const phone = e.target.dataset.phone;
+              sendWhatsAppMessage(phone);
             });
           });
 
@@ -216,6 +206,13 @@ function isDateLessThanOrEqualToToday(inputDate) {
       document.getElementById("closeModal").addEventListener("click", () => {
         document.getElementById("editFormModal").style.display = "none";
       });
+
+       // Send WhatsApp message function
+       function sendWhatsAppMessage(phone) {
+        const message = encodeURIComponent("May the new year bring you fresh starts, exciting journeys, and unforgettable memories, and may our partnership continue to flourish");
+        const whatsappURL = `https://wa.me/${phone}?text=${message}`;
+        window.open(whatsappURL, "_blank");
+      }
 
 
 
