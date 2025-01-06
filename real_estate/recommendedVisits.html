@@ -101,6 +101,7 @@
     </footer>
 
     <script src="./scripts/script.js"></script>
+    <script src="./scripts/dataScript.js"></script>
     <script>
       const tableBody = document.querySelector("#clientsTable tbody");
       tableBody.innerHTML = ""; // Clear any existing content
@@ -186,23 +187,9 @@
             status: document.getElementById("editStatus").value,
           };
           
-          fetch(
+          updateClientDetails(
             `${scriptURL}?action=updateVisit&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}&host=${formData.host}`
           )
-            .then((response) => response.json())
-            .then((data) => {
-              // console.log(data);
-              if (data.success) {
-                alert("Client details submitted successfully!");
-                this.reset(); // Reset the form after submission
-              } else {
-                alert("Failed to submit client details.");
-              }
-            })
-            .catch((error) => {
-              console.error("Error submitting data:", error);
-              alert("An error occurred while submitting the form.");
-            });
 
           // Close the modal and update the table
           document.getElementById("editFormModal").style.display = "none";

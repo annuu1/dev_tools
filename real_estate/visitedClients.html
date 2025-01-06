@@ -240,6 +240,7 @@
     </footer>
 
     <script src="./scripts/script.js"></script>
+    <script src="./scripts/dataScript.js"></script>
     <script>
           const tableBody = document.querySelector("#clientsTable tbody");
           tableBody.innerHTML = ""; // Clear any existing content
@@ -314,21 +315,9 @@
             status: document.getElementById("editStatus").value,
           };
 
-          fetch(
+          updateClientDetails(
             `${scriptURL}?action=updateVisit&host=${formData.host}&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
           )
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                alert("Client details submitted successfully!");
-                this.reset();
-              } else {
-                alert("Failed to submit client details.");
-              }
-            })
-            .catch((error) => {
-              alert("An error occurred while submitting the form.");
-            });
 
           document.getElementById("editFormModal").style.display = "none";
         };
