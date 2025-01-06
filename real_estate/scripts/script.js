@@ -193,7 +193,11 @@ async function loadAndUpdateData() {
 }
 
 // Call getFollowUps once when the page loads
-window.onload = async function () {
+window.onload = async function () {    
+    if (window.performance.navigation.type === window.performance.navigation.TYPE_RELOAD) {
+        // Call the function to load data initially when the page loads
+        loadAndUpdateData();
+      }
     // Check if followUpsData exists in localStorage, and if so, use it
     if (!followUpsData) {
         await getFollowUps(); // Fetch data if not in localStorage
