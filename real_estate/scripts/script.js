@@ -25,7 +25,7 @@ function showLoading() {
           0% { background-color: rgba(0, 0, 0, 0.7); }
           25% { background-color: rgba(255, 40, 40, 0.7); }
           50% { background-color: rgba(25, 233, 181, 0.7); }
-          75% { background-color: rgba(0, 0, 255, 0.7); }
+          75% { background-color: rgba(199, 108, 235, 0.7); }
           100% { background-color: rgba(0, 0, 0, 0.7); }
         }
         #loading {
