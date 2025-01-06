@@ -176,6 +176,7 @@
               if (data.success) {
                 alert("Client details submitted successfully!");
                 this.reset(); // Reset the form after submission
+                loadAndUpdateData()
               } else {
                 alert("Failed to submit client details.");
               }

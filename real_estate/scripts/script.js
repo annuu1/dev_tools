@@ -192,9 +192,6 @@ async function loadAndUpdateData() {
     updateDashboard();
 }
 
-// Call the function to load data initially when the page loads
-loadAndUpdateData();
-
 // Call getFollowUps once when the page loads
 window.onload = async function () {
     // Check if followUpsData exists in localStorage, and if so, use it
