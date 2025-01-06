@@ -29,12 +29,7 @@ async function getVisits() {
         visitsData = data.filter(element => {            
             return element.host === hostName
         });
-
-        visitsData.forEach(element => {
-                console.log(element.host);
-                            
-        });
-        
+                
         // Store data in localStorage for future use
         localStorage.setItem('visitsData', JSON.stringify(visitsData));
         // window.location.reload()
