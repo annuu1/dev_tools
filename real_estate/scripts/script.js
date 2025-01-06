@@ -1,4 +1,4 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbw9fDxBpJp1gGuBgpRMkDFNK3o5uP2yB30-pZfTIO1aT_mS6ydLqWA1BudtQ-FBB3yP/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbyZYGTH-NR81IaJmZs1kttrJLciSTo7CStNg93Jdui-F8dDU8CyWeuNorqLqib6vBUnmQ/exec';
 
 const hostName = 'Bindu'
 
