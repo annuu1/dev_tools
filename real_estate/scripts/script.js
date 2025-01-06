@@ -12,11 +12,28 @@ let visitsData = JSON.parse(localStorage.getItem('visitsData')) || null;
 
 // Show loading indicator
 function showLoading() {
-    document.body.innerHTML = `
-  <div id="loading" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.7); color: white; padding: 20px; border-radius: 5px; z-index: 1000;">
-    Loading, please wait...
-  </div>
-` + document.body.innerHTML;
+    document.body.insertAdjacentHTML('afterbegin', `
+        <div id="loading" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.7); color: white; padding: 20px; border-radius: 5px; z-index: 1000;">
+          Loading, please wait...
+        </div>
+      `);
+      
+      // Add CSS animation to change background color continuously
+      var style = document.createElement('style');
+      style.innerHTML = `
+        @keyframes colorChange {
+          0% { background-color: rgba(0, 0, 0, 0.7); }
+          25% { background-color: rgba(255, 40, 40, 0.7); }
+          50% { background-color: rgba(25, 233, 181, 0.7); }
+          75% { background-color: rgba(0, 0, 255, 0.7); }
+          100% { background-color: rgba(0, 0, 0, 0.7); }
+        }
+        #loading {
+          animation: colorChange 4s infinite;
+        }
+      `;
+      
+      document.head.appendChild(style);
 
     
     document.getElementById('loading').style.display = 'block';
