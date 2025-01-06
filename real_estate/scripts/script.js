@@ -1,5 +1,7 @@
 const scriptURL = 'https://script.google.com/macros/s/AKfycbw9fDxBpJp1gGuBgpRMkDFNK3o5uP2yB30-pZfTIO1aT_mS6ydLqWA1BudtQ-FBB3yP/exec';
 
+const hostName = 'Bindu'
+
 const contactedClients = document.querySelector("#contactedClients h3");
 const allVisits = document.querySelector('#visits h3');
 
@@ -24,7 +26,15 @@ async function getVisits() {
     try {
         const response = await fetch(`${scriptURL}?action=getVisits`);
         const data = await response.json();
-        visitsData = data;
+        visitsData = data.filter(element => {            
+            return element.host === hostName
+        });
+
+        visitsData.forEach(element => {
+                console.log(element.host);
+                            
+        });
+        
         // Store data in localStorage for future use
         localStorage.setItem('visitsData', JSON.stringify(visitsData));
         // window.location.reload()
