@@ -7,18 +7,20 @@
     <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/displayData.css" />
     <!-- Font Awesome CDN for icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header>
       <h1>Contacted Clients and Follow-ups</h1>
       <div class="btns">
         <a href="./home.html" class="btn">Home</a>
-        <a href="./addFollowUp.html" class="btn">Add</a>
+        <a href="./addVisit.html" class="btn">Add</a>
       </div>
     </header>
     <main>
-      
       <section class="table-container">
         <table id="clientsTable">
           <thead>
@@ -53,7 +55,7 @@
             <option value="Bindu">Bindu</option>
             <option value="Pooja">Pooja</option>
           </select>
-          
+
           <label for="editName">Name:</label>
           <input type="text" id="editName" name="name" required /><br />
 
@@ -71,13 +73,13 @@
           </select>
 
           <label for="editNote">Note:</label>
-          <textarea id="editNote" name="note" ></textarea><br />
+          <textarea id="editNote" name="note"></textarea><br />
 
           <label for="editBroker">Broker:</label>
-          <input type="text" id="editBroker" name="broker"  /><br />
+          <input type="text" id="editBroker" name="broker" /><br />
 
           <label for="editDate">Date:</label>
-          <input type="date" id="editDate" name="date"  /><br />
+          <input type="date" id="editDate" name="date" /><br />
 
           <label for="editStatus">Status:</label>
           <select id="editStatus" name="status" required>
@@ -85,8 +87,8 @@
             <option value="Visited">Visited</option>
             <option value="Pending">Pending on Client</option>
             <option value="Follow-up">Follow-up</option>
-            <option value="Closed">Closed</option>
-          </select><br />
+            <option value="Closed">Closed</option></select
+          ><br />
 
           <input type="submit" value="Submit" />
           <button type="button" id="cancelEdit">Cancel</button>
@@ -103,62 +105,70 @@
       const tableBody = document.querySelector("#clientsTable tbody");
       tableBody.innerHTML = ""; // Clear any existing content
 
-
       visitsData.forEach((client, index) => {
-
-            if(isDateLessThanOrEqualToToday(client.date) && client.status != 'Closed'){
-              
-                const row = document.createElement("tr");
-            row.innerHTML = `
-                        <td>${new Date(client.lastContact).toLocaleString()}</td>
+        if (
+          isDateLessThanOrEqualToToday(client.date) &&
+          client.status != "Closed"
+        ) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                        <td>${new Date(
+                          client.lastContact
+                        ).toLocaleString()}</td>
                         <td>${client.name}</td>
                         <td>${client.phone}</td>
                         <td>${client.interest}</td>
                         <td>${client.note}</td>
                         <td>${client.broker}</td>
-                        <td>${client.date ? formatDateFromInput(client.date) : ''}</td>
+                        <td>${
+                          client.date ? formatDateFromInput(client.date) : ""
+                        }</td>
                         <td>${client.host}</td>
                         <td>${client.status}</td>
                          <td>
                             <button class="btn editBtn" data-index="${index}">Edit</button>
-                            <button class="btn whatsappBtn" data-phone="${client.phone}">
+                            <button class="btn whatsappBtn" data-phone="${
+                              client.phone
+                            }">
                                 <i class="fab fa-whatsapp"></i>
                             </button>
                         </td>
                     `;
-            tableBody.appendChild(row);
-            }            
-          });
+          tableBody.appendChild(row);
+        }
+      });
 
-          // Add event listeners for the "Edit" buttons
-          const editButtons = document.querySelectorAll(".editBtn");
-          editButtons.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-              const index = e.target.dataset.index;
-              const client = visitsData[index];
-              openEditForm(client, index);
-            });
-          });
-          const whatsappButtons = document.querySelectorAll(".whatsappBtn");
-          whatsappButtons.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-              const phone = e.target.dataset.phone;
-              sendWhatsAppMessage(phone);
-            });
-          });
+      // Add event listeners for the "Edit" buttons
+      const editButtons = document.querySelectorAll(".editBtn");
+      editButtons.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const index = e.target.dataset.index;
+          const client = visitsData[index];
+          openEditForm(client, index);
+        });
+      });
+      const whatsappButtons = document.querySelectorAll(".whatsappBtn");
+      whatsappButtons.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const phone = e.target.dataset.phone;
+          sendWhatsAppMessage(phone);
+        });
+      });
 
       // Function to open the edit form in the modal
       function openEditForm(client, index) {
         // console.log(formatDateFromInput(client.date));
-        
         document.getElementById("editFormModal").style.display = "block";
         document.getElementById("editFormModal").style.display = "block";
+        document.getElementById("hostName").value = client.host;
         document.getElementById("editName").value = client.name;
         document.getElementById("editPhone").value = client.phone;
         document.getElementById("editInterest").value = client.interest;
         document.getElementById("editNote").value = client.note;
         document.getElementById("editBroker").value = client.broker;
-        document.getElementById("editDate").value = formatDateToInput1(client.date);
+        document.getElementById("editDate").value = formatDateToInput1(
+          client.date
+        );
         document.getElementById("editStatus").value = client.status;
 
         // Handle form submission
@@ -175,10 +185,9 @@
             date: document.getElementById("editDate").value,
             status: document.getElementById("editStatus").value,
           };
-
           
           fetch(
-            `${scriptURL}?action=updateVisit&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}&status=${formData.host}`
+            `${scriptURL}?action=updateVisit&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}&host=${formData.host}`
           )
             .then((response) => response.json())
             .then((data) => {
@@ -206,25 +215,27 @@
       });
 
       // Close modal when clicking outside the modal content
-      document.getElementById("editFormModal").addEventListener("click", (e) => {
-        if (e.target === document.getElementById("editFormModal")) {
-          document.getElementById("editFormModal").style.display = "none";
-        }
-      });
+      document
+        .getElementById("editFormModal")
+        .addEventListener("click", (e) => {
+          if (e.target === document.getElementById("editFormModal")) {
+            document.getElementById("editFormModal").style.display = "none";
+          }
+        });
 
       // Close modal when clicking the "X" button
       document.getElementById("closeModal").addEventListener("click", () => {
         document.getElementById("editFormModal").style.display = "none";
       });
 
-       // Send WhatsApp message function
-       function sendWhatsAppMessage(phone) {
-        const message = encodeURIComponent("May the new year bring you fresh starts, exciting journeys, and unforgettable memories, and may our partnership continue to flourish");
+      // Send WhatsApp message function
+      function sendWhatsAppMessage(phone) {
+        const message = encodeURIComponent(
+          "May the new year bring you fresh starts, exciting journeys, and unforgettable memories, and may our partnership continue to flourish"
+        );
         const whatsappURL = `https://wa.me/${phone}?text=${message}`;
         window.open(whatsappURL, "_blank");
       }
-
-
 
       function formatDateTime(date) {
         // Extract parts of the date
@@ -241,19 +252,17 @@
         return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
       }
 
-      
       function formatDateToInput1(inputDate) {
-            // Parse the input date (which will be in YYYY-MM-DD format)
-            const date = new Date(inputDate); // Convert the string to a Date object
+        // Parse the input date (which will be in YYYY-MM-DD format)
+        const date = new Date(inputDate); // Convert the string to a Date object
 
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1
-            const day = String(date.getDate()).padStart(2, "0");
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1
+        const day = String(date.getDate()).padStart(2, "0");
 
-            // Return formatted date as YYYY-MM-DD
-            return `${year}-${month}-${day}`;
-        }
-
+        // Return formatted date as YYYY-MM-DD
+        return `${year}-${month}-${day}`;
+      }
     </script>
   </body>
 </html>
