@@ -72,6 +72,12 @@ footer {
     bottom: 0;
     width: 100%;
 }
+#searchInput{
+    padding: 5px 10px;
+    margin: 10px;
+    border-radius: 5px;
+    width: 100%;
+}
 
 /* Responsive Styles */
 @media (max-width: 600px) {

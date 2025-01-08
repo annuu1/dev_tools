@@ -18,6 +18,12 @@
       <div class="btns">
         <a href="./home.html" class="btn">Home</a>
         <a href="./addVisit.html" class="btn">Add</a>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Search by name or mobile number"
+        />
+        
       </div>
     </header>
     <main>
@@ -103,6 +109,52 @@
     <script src="./scripts/script.js"></script>
     <script src="./scripts/dataScript.js"></script>
     <script>
+      // Get the search input and button
+      const searchInput = document.getElementById("searchInput");
+      const searchBtn = document.getElementById("searchBtn");   
+
+      // Add an event listener to the search button
+      searchInput.addEventListener("input", () => {
+        
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredData = visitsData.filter((client) => {
+          return (
+            client.name.toLowerCase().includes(searchTerm) ||
+            String(client.phone).includes(searchTerm)
+          );
+        });
+
+        // Update the table with the filtered data
+        const tableBody = document.querySelector("#clientsTable tbody");
+        tableBody.innerHTML = "";
+        filteredData.forEach((client, index) => {
+          if (
+            isDateLessThanOrEqualToToday(client.date) &&
+            client.status != "Closed"
+          ) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+        <td>${new Date(client.lastContact).toLocaleString()}</td>
+        <td>${client.name}</td>
+        <td>${client.phone}</td>
+        <td>${client.interest}</td>
+        <td>${client.note}</td>
+        <td>${client.broker}</td>
+        <td>${client.date ? formatDateFromInput(client.date) : ""}</td>
+        <td>${client.host}</td>
+        <td>${client.status}</td>
+        <td>
+          <button class="btn editBtn" data-index="${index}">Edit</button>
+          <button class="btn whatsappBtn" data-phone="${client.phone}">
+            <i class="fab fa-whatsapp"></i>
+          </button>
+        </td>
+      `;
+            tableBody.appendChild(row);
+          }
+        });
+      });
+
       const tableBody = document.querySelector("#clientsTable tbody");
       tableBody.innerHTML = ""; // Clear any existing content
 
@@ -186,10 +238,10 @@
             date: document.getElementById("editDate").value,
             status: document.getElementById("editStatus").value,
           };
-          
+
           updateClientDetails(
             `${scriptURL}?action=updateVisit&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}&host=${formData.host}`
-          )
+          );
 
           // Close the modal and update the table
           document.getElementById("editFormModal").style.display = "none";
