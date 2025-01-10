@@ -81,6 +81,15 @@
             status: document.getElementById("status").value,
           };
 
+          let recordPresent = false;
+          followUpsData.forEach(element => {
+            if (element.phone.toString() === formData.phone.toString()) {
+              alert('phone number already exists');
+              recordPresent = true;
+          }
+        });
+
+        if(!recordPresent){
           fetch(
             `${scriptURL}?action=addFollowUp&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
           )
@@ -97,6 +106,7 @@
               console.error("Error submitting data:", error);
               alert("An error occurred while submitting the form.");
             });
+          }
         });
 
       function formatDateTime(date) {
