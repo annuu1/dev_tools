@@ -181,6 +181,23 @@ function updateDashboard() {
         allVisits ? allVisits.textContent = visitsData.length : '';
     }
 }
+//function to send whatsapp
+function sendWhatsAppMessage(phone) {
+    const currentHour = new Date().getHours();
+    let greeting;
+  
+    if (currentHour < 12) {
+      greeting = "Hi, \nGood morning!";
+    } else if (currentHour < 18) {
+      greeting = "Hi, \nGood afternoon!";
+    } else {
+      greeting = "Hi, \nGood evening!";
+    }
+  
+    const message = encodeURIComponent(greeting);
+    const whatsappURL = `https://wa.me/${phone}?text=${message}`;
+    window.open(whatsappURL, "_blank");
+  }
 
 // Function to load and update data
 async function loadAndUpdateData() {

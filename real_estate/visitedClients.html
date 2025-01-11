@@ -392,40 +392,6 @@ const searchInput = document.getElementById("searchInput");
       document.getElementById("closeModal").addEventListener("click", () => {
         document.getElementById("editFormModal").style.display = "none";
       });
-
-      // Send WhatsApp message function
-      function sendWhatsAppMessage(phone) {
-        const message = encodeURIComponent("May the new year bring you fresh starts, exciting journeys, and unforgettable memories, and may our partnership continue to flourish.");
-        const whatsappURL = `https://wa.me/${phone}?text=${message}`;
-        window.open(whatsappURL, "_blank");
-      }
-
-      // Utility functions for formatting dates
-      function formatDateTime(date) {
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, "0");
-        const minutes = String(date.getMinutes()).padStart(2, "0");
-        const seconds = String(date.getSeconds()).padStart(2, "0");
-        return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
-      }
-
-      function formatDateFromInput(inputDate) {
-        const date = new Date(inputDate);
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const year = date.getFullYear();
-        return `${month}/${day}/${year}`;
-      }
-
-      function formatDateToInput1(inputDate) {
-        const date = new Date(inputDate);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-      }
     </script>
   </body>
 </html>
