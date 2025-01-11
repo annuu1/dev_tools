@@ -188,7 +188,7 @@ function sendWhatsAppMessage(phone) {
   
     if (currentHour < 12) {
       greeting = "Hi, \nGood morning!";
-    } else if (currentHour < 18) {
+    } else if (currentHour < 16) {
       greeting = "Hi, \nGood afternoon!";
     } else {
       greeting = "Hi, \nGood evening!";
