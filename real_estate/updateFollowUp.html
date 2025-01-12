@@ -69,13 +69,6 @@
             lastContact: formatDateTime(new Date()), // Set last contact to now
           };
 
-          // Send the data to the server
-          // let newURL = `${scriptURL}?action=addFollowUP`;
-
-          // for (const key in formData) {
-          //     newURL += `&${encodeURIComponent(key)}=${encodeURIComponent(formData[key])}`;
-          // }
-          // console.log(newURL);
           fetch(
             `${scriptURL}?action=updateFollowUp&name=${formData.name}&phone=${formData.phone}&interest=${formData.interest}&note=${formData.note}&broker=${formData.broker}&date=${formData.date}&lastContact=${formData.lastContact}&status=${formData.status}`
           )

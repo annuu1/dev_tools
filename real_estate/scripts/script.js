@@ -163,7 +163,17 @@ function formatDateFromInput(inputDate) {
     const year = date.getFullYear();
     return `${month}/${day}/${year}`;
 }
+function formatDateToInput1(inputDate) {
+    // Parse the input date (which will be in YYYY-MM-DD format)
+    const date = new Date(inputDate); // Convert the string to a Date object
 
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1
+    const day = String(date.getDate()).padStart(2, "0");
+
+    // Return formatted date as YYYY-MM-DD
+    return `${year}-${month}-${day}`;
+  }
 // Update the dashboard with the fetched data
 function updateDashboard() {
     if (followUpsData) {
