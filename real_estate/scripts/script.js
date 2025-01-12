@@ -174,6 +174,21 @@ function formatDateToInput1(inputDate) {
     // Return formatted date as YYYY-MM-DD
     return `${year}-${month}-${day}`;
   }
+  function formatDateTime(date) {
+    // Extract parts of the date
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1
+    const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getFullYear();
+
+    // Extract parts of the time
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    // Return the formatted string
+    return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`;
+  }
+  
 // Update the dashboard with the fetched data
 function updateDashboard() {
     if (followUpsData) {
