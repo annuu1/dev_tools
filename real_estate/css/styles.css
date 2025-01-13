@@ -10,6 +10,8 @@ header {
     color: #ffffff;
     padding: 20px 0;
     text-align: center;
+    position: sticky;
+    top: 0;
 }
 div.btns{
     height: 30px;
