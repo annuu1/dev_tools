@@ -49,6 +49,8 @@ async function getFollowUps() {
     try {
         showLoading(); // Show loading indicator
         const response = await fetch(`${scriptURL}?action=getFollowUps`);
+        console.log(response);
+        
         const data = await response.json();
         followUpsData = data;  // Store the data in the global variable
         // Store data in localStorage for future use
@@ -64,6 +66,8 @@ async function getVisits() {
     try {
         showLoading(); // Show loading indicator
         const response = await fetch(`${scriptURL}?action=getVisits`);
+        console.log(response);
+        
         const data = await response.json();
         visitsData = data.filter(element => {            
             return element.host === hostName;
