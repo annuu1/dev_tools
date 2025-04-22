@@ -163,8 +163,37 @@
         .bot-info-text {
             overflow: hidden;
         }
-        .clear-fix {
-            clear: both;
+        .message-media {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        
+        .view-media-btn {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .view-media-btn:hover {
+            background-color: #006699;
+        }
+        
+        .topic-group {
+            border-left: 3px solid #0088cc;
+            padding-left: 10px;
+            margin: 15px 0;
+        }
+        
+        .topic-group h4 {
+            margin: 5px 0;
+            color: #0088cc;
         }
     </style>
 </head>
@@ -443,6 +472,7 @@
             try {
                 // We can't directly get chat history through the Bot API
                 // Instead, we'll use getUpdates and filter for this chat
+                // Increased limit to get more messages
                 const updates = await makeApiRequest('getUpdates', { offset: -100, limit: 100 });
                 
                 if (!updates || updates.length === 0) {
@@ -453,13 +483,44 @@
                 // Filter and sort messages for this chat
                 let messages = [];
                 updates.forEach(update => {
+                    // Handle regular messages
                     if (update.message && update.message.chat && update.message.chat.id === chatId) {
+                        const msg = update.message;
                         messages.push({
-                            message_id: update.message.message_id,
-                            date: update.message.date,
-                            from: update.message.from,
-                            text: update.message.text || '[Media or other content]',
-                            isFromBot: update.message.from.is_bot
+                            message_id: msg.message_id,
+                            date: msg.date,
+                            from: msg.from,
+                            isFromBot: msg.from ? msg.from.is_bot : false,
+                            // Handle different message types
+                            content: processMessageContent(msg),
+                            // Store message topic if available
+                            topic: msg.message_thread_id || null
+                        });
+                    }
+                    // Handle channel posts
+                    else if (update.channel_post && update.channel_post.chat && update.channel_post.chat.id === chatId) {
+                        const post = update.channel_post;
+                        messages.push({
+                            message_id: post.message_id,
+                            date: post.date,
+                            from: { first_name: post.chat.title || 'Channel' },
+                            isFromBot: false,
+                            content: processMessageContent(post),
+                            topic: post.message_thread_id || null
+                        });
+                    }
+                    // Handle topic messages
+                    else if (update.message && update.message.chat && 
+                             update.message.chat.id === chatId && 
+                             update.message.message_thread_id) {
+                        const msg = update.message;
+                        messages.push({
+                            message_id: msg.message_id,
+                            date: msg.date,
+                            from: msg.from,
+                            isFromBot: msg.from ? msg.from.is_bot : false,
+                            content: processMessageContent(msg),
+                            topic: msg.message_thread_id
                         });
                     }
                 });
@@ -472,24 +533,52 @@
                     return;
                 }
                 
-                // Display messages
+                // Group messages by topic if they exist
+                const topicGroups = {};
+                const nonTopicMessages = [];
+                
                 messages.forEach(msg => {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = `message ${msg.isFromBot ? 'message-from-bot' : 'message-to-bot'}`;
-                    
-                    const fromName = msg.from ? 
-                        `${msg.from.first_name} ${msg.from.last_name || ''}`.trim() : 
-                        'Unknown';
-                    
-                    messageDiv.innerHTML = `
-                        <div class="message-info">
-                            <strong>${fromName}</strong> - ${formatDate(msg.date)}
-                        </div>
-                        <div class="message-text">${msg.text}</div>
-                    `;
-                    
-                    messagesList.appendChild(messageDiv);
+                    if (msg.topic) {
+                        if (!topicGroups[msg.topic]) {
+                            topicGroups[msg.topic] = [];
+                        }
+                        topicGroups[msg.topic].push(msg);
+                    } else {
+                        nonTopicMessages.push(msg);
+                    }
                 });
+                
+                // Display topic groups if they exist
+                if (Object.keys(topicGroups).length > 0) {
+                    for (const [topicId, topicMessages] of Object.entries(topicGroups)) {
+                        const topicDiv = document.createElement('div');
+                        topicDiv.className = 'topic-group';
+                        topicDiv.innerHTML = `<h4>Topic ID: ${topicId}</h4>`;
+                        messagesList.appendChild(topicDiv);
+                        
+                        // Display up to 10 messages per topic
+                        const messagesToShow = topicMessages.slice(0, 10);
+                        messagesToShow.forEach(msg => {
+                            displayMessage(msg, messagesList);
+                        });
+                    }
+                }
+                
+                // Display non-topic messages
+                if (nonTopicMessages.length > 0) {
+                    if (Object.keys(topicGroups).length > 0) {
+                        const regularMessagesDiv = document.createElement('div');
+                        regularMessagesDiv.className = 'topic-group';
+                        regularMessagesDiv.innerHTML = `<h4>Regular Messages</h4>`;
+                        messagesList.appendChild(regularMessagesDiv);
+                    }
+                    
+                    // Display up to 10 regular messages
+                    const messagesToShow = nonTopicMessages.slice(0, 10);
+                    messagesToShow.forEach(msg => {
+                        displayMessage(msg, messagesList);
+                    });
+                }
                 
                 // Show load more button if there are messages
                 if (messages.length > 0) {
@@ -500,6 +589,325 @@
                 }
             } catch (error) {
                 showError(`Error loading messages: ${error.message}`);
+            }
+        }
+        
+        // Process different types of message content
+        function processMessageContent(msg) {
+            // Text message
+            if (msg.text) {
+                return {
+                    type: 'text',
+                    text: msg.text
+                };
+            }
+            // Photo
+            else if (msg.photo) {
+                const largestPhoto = msg.photo[msg.photo.length - 1]; // Get the highest resolution
+                return {
+                    type: 'photo',
+                    file_id: largestPhoto.file_id,
+                    caption: msg.caption || ''
+                };
+            }
+            // Video
+            else if (msg.video) {
+                return {
+                    type: 'video',
+                    file_id: msg.video.file_id,
+                    caption: msg.caption || ''
+                };
+            }
+            // Document
+            else if (msg.document) {
+                return {
+                    type: 'document',
+                    file_id: msg.document.file_id,
+                    file_name: msg.document.file_name || 'Document',
+                    caption: msg.caption || ''
+                };
+            }
+            // Audio
+            else if (msg.audio) {
+                return {
+                    type: 'audio',
+                    file_id: msg.audio.file_id,
+                    title: msg.audio.title || 'Audio',
+                    caption: msg.caption || ''
+                };
+            }
+            // Voice
+            else if (msg.voice) {
+                return {
+                    type: 'voice',
+                    file_id: msg.voice.file_id,
+                    caption: msg.caption || ''
+                };
+            }
+            // Sticker
+            else if (msg.sticker) {
+                return {
+                    type: 'sticker',
+                    file_id: msg.sticker.file_id,
+                    emoji: msg.sticker.emoji || ''
+                };
+            }
+            // Location
+            else if (msg.location) {
+                return {
+                    type: 'location',
+                    latitude: msg.location.latitude,
+                    longitude: msg.location.longitude
+                };
+            }
+            // Contact
+            else if (msg.contact) {
+                return {
+                    type: 'contact',
+                    phone_number: msg.contact.phone_number,
+                    first_name: msg.contact.first_name,
+                    last_name: msg.contact.last_name || ''
+                };
+            }
+            // Poll
+            else if (msg.poll) {
+                return {
+                    type: 'poll',
+                    question: msg.poll.question,
+                    options: msg.poll.options.map(opt => opt.text).join(', ')
+                };
+            }
+            // Fallback for other types
+            else {
+                return {
+                    type: 'unknown',
+                    text: '[Unsupported message type]'
+                };
+            }
+        }
+        
+        // Display a message with its content
+        function displayMessage(msg, container) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${msg.isFromBot ? 'message-from-bot' : 'message-to-bot'}`;
+            
+            const fromName = msg.from ? 
+                `${msg.from.first_name} ${msg.from.last_name || ''}`.trim() : 
+                'Unknown';
+            
+            let contentHtml = '';
+            
+            switch (msg.content.type) {
+                case 'text':
+                    contentHtml = `<div class="message-text">${msg.content.text}</div>`;
+                    break;
+                    
+                case 'photo':
+                    contentHtml = `
+                        <div class="message-media">
+                            <p>[Photo]</p>
+                            <p>${msg.content.caption}</p>
+                            <button class="view-media-btn" data-file-id="${msg.content.file_id}" data-type="photo">View Photo</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'video':
+                    contentHtml = `
+                        <div class="message-media">
+                            <p>[Video]</p>
+                            <p>${msg.content.caption}</p>
+                            <button class="view-media-btn" data-file-id="${msg.content.file_id}" data-type="video">View Video</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'document':
+                    contentHtml = `
+                        <div class="message-media">
+                            <p>[Document: ${msg.content.file_name}]</p>
+                            <p>${msg.content.caption}</p>
+                            <button class="view-media-btn" data-file-id="${msg.content.file_id}" data-type="document">View Document</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'audio':
+                    contentHtml = `
+                        <div class="message-media">
+                            <p>[Audio: ${msg.content.title}]</p>
+                            <p>${msg.content.caption}</p>
+                            <button class="view-media-btn" data-file-id="${msg.content.file_id}" data-type="audio">Play Audio</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'voice':
+                    contentHtml = `
+                        <div class="message-media">
+                            <p>[Voice Message]</p>
+                            <p>${msg.content.caption}</p>
+                            <button class="view-media-btn" data-file-id="${msg.content.file_id}" data-type="voice">Play Voice</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'sticker':
+                    contentHtml = `
+                        <div class="message-media">
+                            <p>[Sticker${msg.content.emoji ? ': ' + msg.content.emoji : ''}]</p>
+                            <button class="view-media-btn" data-file-id="${msg.content.file_id}" data-type="sticker">View Sticker</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'location':
+                    contentHtml = `
+                        <div class="message-media">
+                            <p>[Location: ${msg.content.latitude}, ${msg.content.longitude}]</p>
+                            <a href="https://www.google.com/maps?q=${msg.content.latitude},${msg.content.longitude}" target="_blank">View on Google Maps</a>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'contact':
+                    contentHtml = `
+                        <div class="message-media">
+                            <p>[Contact: ${msg.content.first_name} ${msg.content.last_name}]</p>
+                            <p>Phone: ${msg.content.phone_number}</p>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'poll':
+                    contentHtml = `
+                        <div class="message-media">
+                            <p>[Poll: ${msg.content.question}]</p>
+                            <p>Options: ${msg.content.options}</p>
+                        </div>
+                    `;
+                    break;
+                    
+                default:
+                    contentHtml = `<div class="message-text">${msg.content.text}</div>`;
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="message-info">
+                    <strong>${fromName}</strong> - ${formatDate(msg.date)}
+                </div>
+                ${contentHtml}
+            `;
+            
+            container.appendChild(messageDiv);
+            
+            // Add event listeners for media buttons
+            const viewMediaBtns = messageDiv.querySelectorAll('.view-media-btn');
+            viewMediaBtns.forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const fileId = btn.getAttribute('data-file-id');
+                    const type = btn.getAttribute('data-type');
+                    await viewMedia(fileId, type);
+                });
+            });
+        }
+        
+        // Function to view media files
+        async function viewMedia(fileId, type) {
+            try {
+                // Get file path from Telegram
+                const fileInfo = await makeApiRequest('getFile', { file_id: fileId });
+                
+                if (!fileInfo || !fileInfo.file_path) {
+                    showError('Could not retrieve file information');
+                    return;
+                }
+                
+                // Construct the file URL
+                const fileUrl = `https://api.telegram.org/file/bot${botToken}/${fileInfo.file_path}`;
+                
+                // Open the file in a new window or handle based on type
+                switch (type) {
+                    case 'photo':
+                    case 'sticker':
+                        window.open(fileUrl, '_blank');
+                        break;
+                        
+                    case 'video':
+                        // Create a modal with video player
+                        const videoModal = document.createElement('div');
+                        videoModal.style.position = 'fixed';
+                        videoModal.style.top = '0';
+                        videoModal.style.left = '0';
+                        videoModal.style.width = '100%';
+                        videoModal.style.height = '100%';
+                        videoModal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                        videoModal.style.zIndex = '1000';
+                        videoModal.style.display = 'flex';
+                        videoModal.style.justifyContent = 'center';
+                        videoModal.style.alignItems = 'center';
+                        
+                        videoModal.innerHTML = `
+                            <div style="position:relative; max-width:80%; max-height:80%;">
+                                <video controls style="max-width:100%; max-height:80vh;">
+                                    <source src="${fileUrl}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <button style="position:absolute; top:-30px; right:0; background:#fff; border:none; padding:5px 10px; cursor:pointer;">Close</button>
+                            </div>
+                        `;
+                        
+                        document.body.appendChild(videoModal);
+                        
+                        // Add close functionality
+                        const closeBtn = videoModal.querySelector('button');
+                        closeBtn.addEventListener('click', () => {
+                            document.body.removeChild(videoModal);
+                        });
+                        break;
+                        
+                    case 'audio':
+                    case 'voice':
+                        // Create a modal with audio player
+                        const audioModal = document.createElement('div');
+                        audioModal.style.position = 'fixed';
+                        audioModal.style.top = '0';
+                        audioModal.style.left = '0';
+                        audioModal.style.width = '100%';
+                        audioModal.style.height = '100%';
+                        audioModal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                        audioModal.style.zIndex = '1000';
+                        audioModal.style.display = 'flex';
+                        audioModal.style.justifyContent = 'center';
+                        audioModal.style.alignItems = 'center';
+                        
+                        audioModal.innerHTML = `
+                            <div style="position:relative; background:#fff; padding:20px; border-radius:5px;">
+                                <h3>${type === 'audio' ? 'Audio Player' : 'Voice Message'}</h3>
+                                <audio controls>
+                                    <source src="${fileUrl}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <button style="position:absolute; top:10px; right:10px; background:#f44336; color:#fff; border:none; padding:5px 10px; cursor:pointer;">Close</button>
+                            </div>
+                        `;
+                        
+                        document.body.appendChild(audioModal);
+                        
+                        // Add close functionality
+                        const audioCloseBtn = audioModal.querySelector('button');
+                        audioCloseBtn.addEventListener('click', () => {
+                            document.body.removeChild(audioModal);
+                        });
+                        break;
+                        
+                    case 'document':
+                    default:
+                        window.open(fileUrl, '_blank');
+                        break;
+                }
+            } catch (error) {
+                showError(`Error viewing media: ${error.message}`);
             }
         }
         
