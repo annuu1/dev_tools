@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Tools</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tool-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .tool-card h3 {
+            color: #0088cc;
+            margin-top: 0;
+        }
+        
+        .button {
+            display: inline-block;
+            background-color: #0088cc;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .button:hover {
+            background-color: #006699;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Telegram Tools</h1>
+        <p>Utilities for managing and interacting with Telegram bots</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="../index.html">← Back to Tools Hub</a>
+        </nav>
+        
+        <section>
+            <div class="tool-card">
+                <h3>Telegram Bot Chat Viewer</h3>
+                <p>View and manage your Telegram bot chats, messages, and commands. This tool allows you to:</p>
+                <ul>
+                    <li>View all chats where your bot is active</li>
+                    <li>Read messages from those chats</li>
+                    <li>Check recent updates received by your bot</li>
+                    <li>View and set bot commands</li>
+                </ul>
+                <p><strong>Note:</strong> Your bot token is only used in your browser and is not sent to any server except Telegram's API.</p>
+                <a href="./home.html" class="button">Open Bot Chat Viewer</a>
+            </div>
+            
+            <!-- You can add more Telegram tools here in the future -->
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Dev Tools. All rights reserved.</p>
+    </footer>
+</body>
+</html>

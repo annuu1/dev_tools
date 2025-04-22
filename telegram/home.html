@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Chat Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #0088cc;
+        }
+        .token-input {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+            border: 1px solid #d0e3f0;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #006699;
+        }
+        .chat-list {
+            margin-top: 20px;
+        }
+        .chat-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #0088cc;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .chat-item:hover {
+            background-color: #f0f0f0;
+        }
+        .chat-item.selected {
+            background-color: #e6f7ff;
+            border-left-color: #0066aa;
+        }
+        .messages-container {
+            margin-top: 20px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+        }
+        .message-from-bot {
+            background-color: #e6f7ff;
+            border-left: 3px solid #0088cc;
+        }
+        .message-to-bot {
+            background-color: #f0f0f0;
+            border-left: 3px solid #999;
+        }
+        .message-info {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .error {
+            color: #d9534f;
+            padding: 10px;
+            background-color: #f2dede;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #0088cc;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            border-bottom-color: white;
+            margin-bottom: -1px;
+            color: #0088cc;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .bot-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .bot-info img {
+            max-width: 100px;
+            border-radius: 50%;
+            margin-right: 15px;
+            float: left;
+        }
+        .bot-info-text {
+            overflow: hidden;
+        }
+        .clear-fix {
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Telegram Bot Chat Viewer</h1>
+        
+        <div class="token-input">
+            <h3>Enter Your Telegram Bot Token</h3>
+            <p>This token is only used in your browser and is not sent to any server except Telegram's API.</p>
+            <input type="text" id="bot-token" placeholder="Enter your bot token here">
+            <button id="load-bot-info">Load Bot Information</button>
+            <span id="loading-bot-info" class="loading hidden"></span>
+        </div>
+        
+        <div id="error-container" class="error hidden"></div>
+        
+        <div id="bot-info-container" class="bot-info hidden"></div>
+        
+        <div id="main-content" class="hidden">
+            <div class="tabs">
+                <div class="tab active" data-tab="chats">Chats</div>
+                <div class="tab" data-tab="updates">Recent Updates</div>
+                <div class="tab" data-tab="commands">Commands</div>
+            </div>
+            
+            <div id="chats-tab" class="tab-content active">
+                <h2>Bot Chats</h2>
+                <button id="refresh-chats">Refresh Chats</button>
+                <span id="loading-chats" class="loading hidden"></span>
+                
+                <div id="chat-list" class="chat-list"></div>
+                
+                <div id="messages-container" class="messages-container hidden">
+                    <h3 id="selected-chat-title">Messages</h3>
+                    <button id="load-more-messages" class="hidden">Load More Messages</button>
+                    <div id="messages-list"></div>
+                </div>
+            </div>
+            
+            <div id="updates-tab" class="tab-content">
+                <h2>Recent Updates</h2>
+                <p>This shows the most recent updates received by your bot.</p>
+                <button id="get-updates">Get Recent Updates</button>
+                <span id="loading-updates" class="loading hidden"></span>
+                <div id="updates-container"></div>
+            </div>
+            
+            <div id="commands-tab" class="tab-content">
+                <h2>Bot Commands</h2>
+                <div>
+                    <h3>Current Commands</h3>
+                    <button id="get-commands">Get Current Commands</button>
+                    <span id="loading-commands" class="loading hidden"></span>
+                    <div id="commands-list"></div>
+                    
+                    <h3>Set Commands</h3>
+                    <p>Add commands in JSON format:</p>
+                    <textarea id="commands-json" rows="10" cols="50" placeholder='[
+  {"command": "start", "description": "Start the bot"},
+  {"command": "help", "description": "Show help information"}
+]'></textarea>
+                    <br>
+                    <button id="set-commands">Set Commands</button>
+                    <span id="loading-set-commands" class="loading hidden"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let botToken = '';
+        let currentOffset = 0;
+        let selectedChatId = null;
+        let lastMessageId = 0;
+        
+        // DOM Elements
+        const botTokenInput = document.getElementById('bot-token');
+        const loadBotInfoBtn = document.getElementById('load-bot-info');
+        const loadingBotInfo = document.getElementById('loading-bot-info');
+        const errorContainer = document.getElementById('error-container');
+        const botInfoContainer = document.getElementById('bot-info-container');
+        const mainContent = document.getElementById('main-content');
+        const refreshChatsBtn = document.getElementById('refresh-chats');
+        const loadingChats = document.getElementById('loading-chats');
+        const chatList = document.getElementById('chat-list');
+        const messagesContainer = document.getElementById('messages-container');
+        const selectedChatTitle = document.getElementById('selected-chat-title');
+        const messagesList = document.getElementById('messages-list');
+        const loadMoreMessagesBtn = document.getElementById('load-more-messages');
+        const getUpdatesBtn = document.getElementById('get-updates');
+        const loadingUpdates = document.getElementById('loading-updates');
+        const updatesContainer = document.getElementById('updates-container');
+        const getCommandsBtn = document.getElementById('get-commands');
+        const loadingCommands = document.getElementById('loading-commands');
+        const commandsList = document.getElementById('commands-list');
+        const commandsJson = document.getElementById('commands-json');
+        const setCommandsBtn = document.getElementById('set-commands');
+        const loadingSetCommands = document.getElementById('loading-set-commands');
+        
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and tab contents
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding tab content
+                const tabName = tab.getAttribute('data-tab');
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+            });
+        });
+        
+        // Helper functions
+        function showError(message) {
+            errorContainer.textContent = message;
+            errorContainer.classList.remove('hidden');
+            setTimeout(() => {
+                errorContainer.classList.add('hidden');
+            }, 5000);
+        }
+        
+        function formatDate(timestamp) {
+            const date = new Date(timestamp * 1000);
+            return date.toLocaleString();
+        }
+        
+        async function makeApiRequest(method, params = {}) {
+            if (!botToken) {
+                showError('Bot token is required');
+                return null;
+            }
+            
+            try {
+                const url = `https://api.telegram.org/bot${botToken}/${method}`;
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: Object.keys(params).length ? JSON.stringify(params) : undefined
+                };
+                
+                const response = await fetch(url, options);
+                const data = await response.json();
+                
+                if (!data.ok) {
+                    throw new Error(data.description || 'API request failed');
+                }
+                
+                return data.result;
+            } catch (error) {
+                showError(`Error: ${error.message}`);
+                return null;
+            }
+        }
+        
+        // Load bot information
+        loadBotInfoBtn.addEventListener('click', async () => {
+            botToken = botTokenInput.value.trim();
+            if (!botToken) {
+                showError('Please enter a bot token');
+                return;
+            }
+            
+            loadingBotInfo.classList.remove('hidden');
+            
+            try {
+                const botInfo = await makeApiRequest('getMe');
+                if (botInfo) {
+                    botInfoContainer.innerHTML = `
+                        <div class="bot-info-text">
+                            <h2>${botInfo.first_name}</h2>
+                            <p><strong>Username:</strong> @${botInfo.username}</p>
+                            <p><strong>Bot ID:</strong> ${botInfo.id}</p>
+                            ${botInfo.can_join_groups ? '<p>✅ Can join groups</p>' : '<p>❌ Cannot join groups</p>'}
+                            ${botInfo.can_read_all_group_messages ? '<p>✅ Can read all group messages</p>' : '<p>❌ Cannot read all group messages</p>'}
+                            ${botInfo.supports_inline_queries ? '<p>✅ Supports inline queries</p>' : '<p>❌ Does not support inline queries</p>'}
+                        </div>
+                        <div class="clear-fix"></div>
+                    `;
+                    botInfoContainer.classList.remove('hidden');
+                    mainContent.classList.remove('hidden');
+                    
+                    // Load chats automatically
+                    refreshChats();
+                }
+            } catch (error) {
+                showError(`Error loading bot info: ${error.message}`);
+            } finally {
+                loadingBotInfo.classList.add('hidden');
+            }
+        });
+        
+        // Refresh chats
+        async function refreshChats() {
+            loadingChats.classList.remove('hidden');
+            chatList.innerHTML = '';
+            
+            try {
+                // Get updates to find chats
+                const updates = await makeApiRequest('getUpdates', { offset: -100, limit: 100 });
+                
+                if (!updates || updates.length === 0) {
+                    chatList.innerHTML = '<p>No chats found. Your bot needs to receive messages to display chats.</p>';
+                    loadingChats.classList.add('hidden');
+                    return;
+                }
+                
+                // Extract unique chats
+                const chats = {};
+                updates.forEach(update => {
+                    if (update.message && update.message.chat) {
+                        const chat = update.message.chat;
+                        chats[chat.id] = chat;
+                    } else if (update.callback_query && update.callback_query.message && update.callback_query.message.chat) {
+                        const chat = update.callback_query.message.chat;
+                        chats[chat.id] = chat;
+                    }
+                });
+                
+                // Display chats
+                if (Object.keys(chats).length === 0) {
+                    chatList.innerHTML = '<p>No chats found. Your bot needs to receive messages to display chats.</p>';
+                } else {
+                    Object.values(chats).forEach(chat => {
+                        const chatItem = document.createElement('div');
+                        chatItem.className = 'chat-item';
+                        chatItem.dataset.chatId = chat.id;
+                        
+                        let chatName = '';
+                        if (chat.type === 'private') {
+                            chatName = `${chat.first_name} ${chat.last_name || ''}`.trim();
+                            if (chat.username) chatName += ` (@${chat.username})`;
+                        } else {
+                            chatName = chat.title || `Group ${chat.id}`;
+                        }
+                        
+                        chatItem.innerHTML = `
+                            <h3>${chatName}</h3>
+                            <p>Type: ${chat.type}</p>
+                            <p>ID: ${chat.id}</p>
+                        `;
+                        
+                        chatItem.addEventListener('click', () => {
+                            document.querySelectorAll('.chat-item').forEach(item => {
+                                item.classList.remove('selected');
+                            });
+                            chatItem.classList.add('selected');
+                            selectedChatId = chat.id;
+                            selectedChatTitle.textContent = `Messages from ${chatName}`;
+                            messagesContainer.classList.remove('hidden');
+                            loadChatMessages(chat.id);
+                        });
+                        
+                        chatList.appendChild(chatItem);
+                    });
+                }
+            } catch (error) {
+                showError(`Error refreshing chats: ${error.message}`);
+            } finally {
+                loadingChats.classList.add('hidden');
+            }
+        }
+        
+        refreshChatsBtn.addEventListener('click', refreshChats);
+        
+        // Load chat messages
+        async function loadChatMessages(chatId, before = 0) {
+            messagesList.innerHTML = before === 0 ? '' : messagesList.innerHTML;
+            
+            try {
+                // We can't directly get chat history through the Bot API
+                // Instead, we'll use getUpdates and filter for this chat
+                const updates = await makeApiRequest('getUpdates', { offset: -100, limit: 100 });
+                
+                if (!updates || updates.length === 0) {
+                    messagesList.innerHTML += '<p>No messages found.</p>';
+                    return;
+                }
+                
+                // Filter and sort messages for this chat
+                let messages = [];
+                updates.forEach(update => {
+                    if (update.message && update.message.chat && update.message.chat.id === chatId) {
+                        messages.push({
+                            message_id: update.message.message_id,
+                            date: update.message.date,
+                            from: update.message.from,
+                            text: update.message.text || '[Media or other content]',
+                            isFromBot: update.message.from.is_bot
+                        });
+                    }
+                });
+                
+                // Sort by date (newest first)
+                messages.sort((a, b) => b.date - a.date);
+                
+                if (messages.length === 0) {
+                    messagesList.innerHTML += '<p>No messages found for this chat.</p>';
+                    return;
+                }
+                
+                // Display messages
+                messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${msg.isFromBot ? 'message-from-bot' : 'message-to-bot'}`;
+                    
+                    const fromName = msg.from ? 
+                        `${msg.from.first_name} ${msg.from.last_name || ''}`.trim() : 
+                        'Unknown';
+                    
+                    messageDiv.innerHTML = `
+                        <div class="message-info">
+                            <strong>${fromName}</strong> - ${formatDate(msg.date)}
+                        </div>
+                        <div class="message-text">${msg.text}</div>
+                    `;
+                    
+                    messagesList.appendChild(messageDiv);
+                });
+                
+                // Show load more button if there are messages
+                if (messages.length > 0) {
+                    loadMoreMessagesBtn.classList.remove('hidden');
+                    lastMessageId = Math.min(...messages.map(m => m.message_id));
+                } else {
+                    loadMoreMessagesBtn.classList.add('hidden');
+                }
+            } catch (error) {
+                showError(`Error loading messages: ${error.message}`);
+            }
+        }
+        
+        loadMoreMessagesBtn.addEventListener('click', () => {
+            if (selectedChatId) {
+                loadChatMessages(selectedChatId, lastMessageId - 1);
+            }
+        });
+        
+        // Get updates
+        getUpdatesBtn.addEventListener('click', async () => {
+            loadingUpdates.classList.remove('hidden');
+            updatesContainer.innerHTML = '';
+            
+            try {
+                const updates = await makeApiRequest('getUpdates', { offset: -100, limit: 100 });
+                
+                if (!updates || updates.length === 0) {
+                    updatesContainer.innerHTML = '<p>No recent updates found.</p>';
+                    return;
+                }
+                
+                // Display updates
+                updates.forEach(update => {
+                    const updateDiv = document.createElement('div');
+                    updateDiv.className = 'message';
+                    
+                    let updateContent = `<p><strong>Update ID:</strong> ${update.update_id}</p>`;
+                    
+                    if (update.message) {
+                        const msg = update.message;
+                        updateContent += `
+                            <p><strong>Type:</strong> Message</p>
+                            <p><strong>From:</strong> ${msg.from ? `${msg.from.first_name} ${msg.from.last_name || ''}`.trim() : 'Unknown'}</p>
+                            <p><strong>Chat:</strong> ${msg.chat.type === 'private' ? 
+                                `${msg.chat.first_name} ${msg.chat.last_name || ''}`.trim() : 
+                                msg.chat.title || `Group ${msg.chat.id}`}</p>
+                            <p><strong>Date:</strong> ${formatDate(msg.date)}</p>
+                            <p><strong>Content:</strong> ${msg.text || '[Media or other content]'}</p>
+                        `;
+                    } else if (update.callback_query) {
+                        const query = update.callback_query;
+                        updateContent += `
+                            <p><strong>Type:</strong> Callback Query</p>
+                            <p><strong>From:</strong> ${query.from ? `${query.from.first_name} ${query.from.last_name || ''}`.trim() : 'Unknown'}</p>
+                            <p><strong>Data:</strong> ${query.data || '[No data]'}</p>
+                        `;
+                    } else {
+                        updateContent += `<p><strong>Type:</strong> Other update type</p>`;
+                    }
+                    
+                    updateDiv.innerHTML = updateContent;
+                    updatesContainer.appendChild(updateDiv);
+                });
+            } catch (error) {
+                showError(`Error getting updates: ${error.message}`);
+            } finally {
+                loadingUpdates.classList.add('hidden');
+            }
+        });
+        
+        // Get commands
+        getCommandsBtn.addEventListener('click', async () => {
+            loadingCommands.classList.remove('hidden');
+            commandsList.innerHTML = '';
+            
+            try {
+                const commands = await makeApiRequest('getMyCommands');
+                
+                if (!commands || commands.length === 0) {
+                    commandsList.innerHTML = '<p>No commands set for this bot.</p>';
+                    return;
+                }
+                
+                // Display commands
+                const commandsTable = document.createElement('table');
+                commandsTable.innerHTML = `
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                    </tr>
+                `;
+                
+                commands.forEach(cmd => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>/${cmd.command}</td>
+                        <td>${cmd.description}</td>
+                    `;
+                    commandsTable.appendChild(row);
+                });
+                
+                commandsList.appendChild(commandsTable);
+                
+                // Update the JSON textarea
+                commandsJson.value = JSON.stringify(commands, null, 2);
+            } catch (error) {
+                showError(`Error getting commands: ${error.message}`);
+            } finally {
+                loadingCommands.classList.add('hidden');
+            }
+        });
+        
+        // Set commands
+        setCommandsBtn.addEventListener('click', async () => {
+            loadingSetCommands.classList.remove('hidden');
+            
+            try {
+                const commandsText = commandsJson.value.trim();
+                if (!commandsText) {
+                    showError('Please enter commands in JSON format');
+                    return;
+                }
+                
+                const commands = JSON.parse(commandsText);
+                const result = await makeApiRequest('setMyCommands', { commands });
+                
+                if (result === true) {
+                    alert('Commands set successfully!');
+                    // Refresh the commands list
+                    getCommandsBtn.click();
+                }
+            } catch (error) {
+                showError(`Error setting commands: ${error.message}`);
+            } finally {
+                loadingSetCommands.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
