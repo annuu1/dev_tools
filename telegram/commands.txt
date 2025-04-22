@@ -1,0 +1,99 @@
+# Telegram Bot Commands for Testing
+
+## Basic Commands
+```json
+[
+  {"command": "start", "description": "Start the bot and get a welcome message"},
+  {"command": "help", "description": "Show available commands and how to use them"},
+  {"command": "about", "description": "Information about this bot"}
+]
+```
+
+## User Management Commands
+```json
+[
+  {"command": "start", "description": "Start the bot and get a welcome message"},
+  {"command": "help", "description": "Show available commands and how to use them"},
+  {"command": "register", "description": "Register a new user account"},
+  {"command": "profile", "description": "View or edit your profile"},
+  {"command": "settings", "description": "Change your notification settings"}
+]
+```
+
+## Content Management Commands
+```json
+[
+  {"command": "start", "description": "Start the bot and get a welcome message"},
+  {"command": "help", "description": "Show available commands and how to use them"},
+  {"command": "post", "description": "Create a new post"},
+  {"command": "list", "description": "List all your posts"},
+  {"command": "search", "description": "Search for content by keyword"},
+  {"command": "delete", "description": "Delete one of your posts"}
+]
+```
+
+## Admin Commands
+```json
+[
+  {"command": "start", "description": "Start the bot and get a welcome message"},
+  {"command": "help", "description": "Show available commands and how to use them"},
+  {"command": "stats", "description": "View bot usage statistics"},
+  {"command": "broadcast", "description": "Send a message to all users"},
+  {"command": "ban", "description": "Ban a user from using the bot"},
+  {"command": "unban", "description": "Unban a previously banned user"},
+  {"command": "config", "description": "Configure bot settings"}
+]
+```
+
+## E-commerce Bot Commands
+```json
+[
+  {"command": "start", "description": "Start the bot and get a welcome message"},
+  {"command": "help", "description": "Show available commands and how to use them"},
+  {"command": "catalog", "description": "Browse our product catalog"},
+  {"command": "search", "description": "Search for products"},
+  {"command": "cart", "description": "View your shopping cart"},
+  {"command": "checkout", "description": "Proceed to checkout"},
+  {"command": "orders", "description": "View your order history"},
+  {"command": "support", "description": "Contact customer support"}
+]
+```
+
+## Reminder Bot Commands
+```json
+[
+  {"command": "start", "description": "Start the bot and get a welcome message"},
+  {"command": "help", "description": "Show available commands and how to use them"},
+  {"command": "remind", "description": "Set a new reminder"},
+  {"command": "list", "description": "List all your active reminders"},
+  {"command": "delete", "description": "Delete a reminder"},
+  {"command": "clear", "description": "Delete all your reminders"},
+  {"command": "timezone", "description": "Set your timezone"}
+]
+```
+
+## Weather Bot Commands
+```json
+[
+  {"command": "start", "description": "Start the bot and get a welcome message"},
+  {"command": "help", "description": "Show available commands and how to use them"},
+  {"command": "weather", "description": "Get current weather for a location"},
+  {"command": "forecast", "description": "Get 5-day forecast for a location"},
+  {"command": "subscribe", "description": "Subscribe to daily weather updates"},
+  {"command": "unsubscribe", "description": "Unsubscribe from weather updates"},
+  {"command": "setlocation", "description": "Set your default location"}
+]
+```
+
+## News Bot Commands
+```json
+[
+  {"command": "start", "description": "Start the bot and get a welcome message"},
+  {"command": "help", "description": "Show available commands and how to use them"},
+  {"command": "news", "description": "Get latest news headlines"},
+  {"command": "category", "description": "Browse news by category"},
+  {"command": "source", "description": "Select news sources"},
+  {"command": "subscribe", "description": "Subscribe to daily news digest"},
+  {"command": "unsubscribe", "description": "Unsubscribe from news updates"}
+]
+```
